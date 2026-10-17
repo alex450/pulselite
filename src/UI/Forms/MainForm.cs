@@ -110,7 +110,6 @@ namespace RazerBatteryTray
         private ToolStripMenuItem autoStartMenuItem;
         private ToolStripMenuItem autoStartShowUIMenuItem;
         private ToolStripMenuItem lowBatteryAlertMenuItem;
-        private ToolStripMenuItem dpiOsdMenuItem;
         private ToolStripMenuItem dpiMenu;
         private ToolStripMenuItem rateMenu;
         private ToolStripMenuItem showItem;
@@ -191,7 +190,6 @@ namespace RazerBatteryTray
         private Dictionary<string, int> pendingRazerStageCandidates = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         private int pendingRapooDpiCandidate = -1;
         private int pendingRapooStageCandidate = -1;
-        private DpiOsdForm osdForm;
 
         // Visual controls - Card 1: Status
         private RoundedCard cardBattery;
@@ -285,7 +283,6 @@ namespace RazerBatteryTray
         private ModernCheckBox chkAutoStart;
         private ModernCheckBox chkAutoStartShowUI;
         private ModernCheckBox chkLowAlert;
-        private ModernCheckBox chkDpiOsd;
         private Label lblSettingsTip;
 
         // Visual controls - Bottom Actions
@@ -299,7 +296,6 @@ namespace RazerBatteryTray
         private const string ConfigRegistryKey = @"Software\FerrisPulse";
 
         private bool lowBatteryAlertEnabled = true;
-        private bool dpiOsdEnabled = true;
         private bool lastLowAlertFired = false;
         private bool isUpdatingUI = false;
         private int trayStyle = 1; // 固定使用“醒目数字能量表”
@@ -362,7 +358,6 @@ namespace RazerBatteryTray
             }
             catch { }
 
-            osdForm = new DpiOsdForm(dpiScale);
 
             RazerDeviceHelper.LoadHardwareCache();
             RapooDeviceHelper.LoadHardwareCache();
@@ -598,24 +593,6 @@ namespace RazerBatteryTray
             base.OnFormClosed(e);
         }
 
-        private void SetDpiOsdEnabled(bool enabled, bool showNotification = false)
-        {
-            dpiOsdEnabled = enabled;
-
-            isUpdatingUI = true;
-            try
-            {
-                if (chkDpiOsd != null && chkDpiOsd.Checked != enabled) chkDpiOsd.Checked = enabled;
-                if (dpiOsdMenuItem != null) dpiOsdMenuItem.Checked = enabled;
-            }
-            finally
-            {
-                isUpdatingUI = false;
-            }
-
-            SaveConfig();
-        }
-
         private void UpdateMenuStatusTexts()
         {
             if (lowBatteryAlertMenuItem != null)
@@ -640,11 +617,6 @@ namespace RazerBatteryTray
                 chkAutoStartShowUI.Checked = autoStartShowMainWindow;
                 chkAutoStartShowUI.Enabled = autoStart;
             }
-            if (dpiOsdMenuItem != null)
-            {
-                dpiOsdMenuItem.Text = "DPI 切换屏幕提示 (OSD)";
-                dpiOsdMenuItem.Checked = dpiOsdEnabled;
-            }
         }
 
         private void LoadConfig()
@@ -657,9 +629,6 @@ namespace RazerBatteryTray
                     {
                         var val = key.GetValue("LowBatteryAlert");
                         if (val != null) lowBatteryAlertEnabled = (int)val == 1;
-
-                        var dVal = key.GetValue("DpiOsdAlert");
-                        if (dVal != null) dpiOsdEnabled = (int)dVal == 1;
 
                         var autoShowVal = key.GetValue("AutoStartShowUI");
                         if (autoShowVal != null) autoStartShowMainWindow = (int)autoShowVal == 1;
@@ -736,7 +705,6 @@ namespace RazerBatteryTray
             {
                 UpdateMenuStatusTexts();
                 if (chkLowAlert != null) chkLowAlert.Checked = lowBatteryAlertEnabled;
-                if (chkDpiOsd != null) chkDpiOsd.Checked = dpiOsdEnabled;
                 if (chkAutoStart != null) chkAutoStart.Checked = autoStart;
                 if (chkAutoStartShowUI != null)
                 {
@@ -774,7 +742,6 @@ namespace RazerBatteryTray
                     if (key != null)
                     {
                         key.SetValue("LowBatteryAlert", lowBatteryAlertEnabled ? 1 : 0);
-                        key.SetValue("DpiOsdAlert", dpiOsdEnabled ? 1 : 0);
                         key.SetValue("AutoStartShowUI", autoStartShowMainWindow ? 1 : 0);
                         key.SetValue("AutoGameRateEnabled", autoGameRateEnabled ? 1 : 0);
                         key.SetValue("GameTargetPollingRate", gamePollingRate);

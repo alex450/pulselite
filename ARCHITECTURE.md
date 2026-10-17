@@ -84,7 +84,6 @@ D:\FerrisPulse · 灵脉\
             ├── MainForm.Hardware.cs      [硬件轮询定时器与 UI 状态刷新]
             ├── MainForm.Events.cs        [WndProc 消息泵与 TaskbarCreated 重建机制]
             ├── ModernDeviceSwitcherFlyout.cs [悬浮式现代外设快速切换器]
-            ├── DpiOsdForm.cs             [零焦点置顶无感 DPI 悬浮提示窗]
             ├── KeyRolloverSpeedForm.cs   [全键无冲与触发测速仪]
             ├── MouseRateTestDialog.cs    [回报率平滑度离线测试工具]
             ├── GameProcessManagerForm.cs [电竞游戏守护进程管理弹窗]

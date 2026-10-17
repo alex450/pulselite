@@ -816,16 +816,6 @@ namespace RazerBatteryTray
             };
             cardSettings.Controls.Add(chkLowAlert);
 
-            chkDpiOsd = new ModernCheckBox();
-            chkDpiOsd.Text = "DPI 切换屏幕提示 (OSD)";
-            chkDpiOsd.Font = new Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            chkDpiOsd.Location = new Point(cPad + chkW + chkGap, chkY2);
-            chkDpiOsd.Size = new Size(chkW, chkH);
-            chkDpiOsd.CheckedChanged += (s, e) => {
-                if (isUpdatingUI) return;
-                SetDpiOsdEnabled(chkDpiOsd.Checked);
-            };
-            cardSettings.Controls.Add(chkDpiOsd);
 
             // Note inside Card 3
             lblSettingsTip = new Label();

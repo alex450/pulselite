@@ -42,14 +42,7 @@ namespace RazerBatteryTray
             {
                 try
                 {
-                    // 1. 若用户未开启 DPI OSD 提示，彻底不轮询硬件，零开销零占用
-                    if (!dpiOsdEnabled)
-                    {
-                        Thread.Sleep(800);
-                        continue;
-                    }
-
-                    // 2. 收集当前需要监听 DPI 的雷蛇鼠标设备（仅针对鼠标类别，杜绝键盘等其他外设误入）
+                    // 1. 收集当前需要监听 DPI 的雷蛇鼠标设备（仅针对鼠标类别，杜绝键盘等其他外设误入）
                     List<string> rzTargets = new List<string>();
                     if (selectedDevice != null && selectedDevice.Brand == "Razer" && selectedDevice.Category == DeviceCategory.Mouse)
                     {
@@ -140,7 +133,7 @@ namespace RazerBatteryTray
                         }
                     }
 
-                    // 3. 雷柏设备极速 DPI 监听
+                    // 2. 雷柏设备极速 DPI 监听
                     int rDpi, rStage, rCount;
                     if (RapooDeviceHelper.FastQueryDpi(out rDpi, out rStage, out rCount))
                     {
@@ -190,11 +183,6 @@ namespace RazerBatteryTray
 
         private void OnDpiChanged(string brand, int newDpi, int newStage, int stageCount, string deviceId = null)
         {
-            if (dpiOsdEnabled && osdForm != null)
-            {
-                osdForm.ShowDpi(newDpi, newStage, stageCount, brand);
-            }
-
             if (activeDevices != null)
             {
                 MouseBatteryInfo matched = null;

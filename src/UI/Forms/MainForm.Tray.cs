@@ -220,11 +220,6 @@ namespace RazerBatteryTray
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
-            dpiOsdMenuItem = new ToolStripMenuItem("DPI 切换屏幕提示 (OSD)", null, (s, e) => {
-                SetDpiOsdEnabled(!dpiOsdEnabled, true);
-                dpiOsdMenuItem.Checked = dpiOsdEnabled;
-            });
-            contextMenu.Items.Add(dpiOsdMenuItem);
 
             lowBatteryAlertMenuItem = new ToolStripMenuItem("低电量气泡通知 (≤20%)", null, (s, e) => {
                 SetLowBatteryAlert(!lowBatteryAlertEnabled, true);
@@ -1302,10 +1297,6 @@ namespace RazerBatteryTray
             {
                 trayIcon.Visible = false;
                 trayIcon.Dispose();
-            }
-            if (osdForm != null && !osdForm.IsDisposed)
-            {
-                osdForm.Dispose();
             }
             Application.Exit();
         }

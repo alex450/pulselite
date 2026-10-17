@@ -12,13 +12,13 @@ echo Compiling FerrisPulse (Open-Source Clean Raw Binary)...
 echo Compiler: %CSC%
 echo =======================================================
 
-"%CSC%" /target:winexe /optimize+ /codepage:65001 /win32icon:app.ico /r:System.Drawing.dll /r:System.Windows.Forms.dll /out:Pulselite.exe /recurse:src\*.cs
+"%CSC%" /target:winexe /optimize+ /codepage:65001 /win32icon:app.ico /r:System.Drawing.dll /r:System.Windows.Forms.dll /out:PulseLite.exe /recurse:src\*.cs
 
 if %ERRORLEVEL% neq 0 (
     echo [FAILED] Compilation failed with error code: %ERRORLEVEL%
     exit /b %ERRORLEVEL%
 )
 
-echo [SUCCESS] Build successful (Pure Open-Source Raw Binary): Pulselite.exe
+echo [SUCCESS] Build successful (Pure Open-Source Raw Binary): PulseLite.exe
 
 endlocal
