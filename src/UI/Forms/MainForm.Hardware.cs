@@ -635,22 +635,6 @@ namespace RazerBatteryTray
                         UpdateStatusDisplay();
                         UpdatePollingRateDisplayStates();
 
-                        if (gameRateNotifyOsd && osdForm != null)
-                        {
-                            osdForm.ShowRate(targetHz, "电竞回报率", brand);
-                        }
-
-                        if (gameRateNotifyToast)
-                        {
-                            SafeShowBalloonTip(3000, "FerrisPulse · 电竞回报率",
-                                string.Format("检测到电竞游戏运行，已自动将鼠标回报率提升至 {0} Hz", targetHz),
-                                ToolTipIcon.Info);
-                        }
-
-                        if (gameRateNotifySound)
-                        {
-                            PlayAscendingChime();
-                        }
                     }));
                 }
             }) { IsBackground = true }.Start();
@@ -682,144 +666,12 @@ namespace RazerBatteryTray
                         UpdateStatusDisplay();
                         UpdatePollingRateDisplayStates();
 
-                        if (gameRateNotifyOsd && osdForm != null)
-                        {
-                            osdForm.ShowRate(targetHz, "常规回报率", brand);
-                        }
-
-                        if (gameRateNotifyToast)
-                        {
-                            SafeShowBalloonTip(3000, "FerrisPulse · 常规回报率",
-                                string.Format("已切回桌面，鼠标回报率已恢复至 {0} Hz 节能状态", targetHz),
-                                ToolTipIcon.Info);
-                        }
-
-                        if (gameRateNotifySound)
-                        {
-                            PlayDescendingChime();
-                        }
                     }));
                 }
             }) { IsBackground = true }.Start();
         }
 
-        private static byte[] ascendingChimeBytes = null;
-        private static byte[] descendingChimeBytes = null;
 
-
-        private static byte[] GenerateBellChimeWav(double[] freqs, double[] durations)
-        {
-            try
-            {
-                int sampleRate = 44100;
-                int totalSamples = 0;
-                for (int i = 0; i < durations.Length; i++) totalSamples += (int)(sampleRate * durations[i]);
-                int dataChunkSize = totalSamples * 2;
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (BinaryWriter bw = new BinaryWriter(ms))
-                    {
-                        bw.Write(new char[] { 'R', 'I', 'F', 'F' });
-                        bw.Write(36 + dataChunkSize);
-                        bw.Write(new char[] { 'W', 'A', 'V', 'E' });
-                        bw.Write(new char[] { 'f', 'm', 't', ' ' });
-                        bw.Write(16);
-                        bw.Write((short)1); // PCM
-                        bw.Write((short)1); // Mono
-                        bw.Write(sampleRate);
-                        bw.Write(sampleRate * 2);
-                        bw.Write((short)2);
-                        bw.Write((short)16);
-                        bw.Write(new char[] { 'd', 'a', 't', 'a' });
-                        bw.Write(dataChunkSize);
-
-                        for (int n = 0; n < freqs.Length; n++)
-                        {
-                            double f = freqs[n];
-                            int nSamples = (int)(sampleRate * durations[n]);
-                            double decayRate = (n == 0) ? 14.0 : 8.0;
-                            for (int i = 0; i < nSamples; i++)
-                            {
-                                double t = (double)i / sampleRate;
-                                double env = (t < 0.006) ? (t / 0.006) : Math.Exp(-(t - 0.006) * decayRate);
-                                double s = (Math.Sin(2.0 * Math.PI * f * t) * 0.75 + Math.Sin(4.0 * Math.PI * f * t) * 0.20 + Math.Sin(6.0 * Math.PI * f * t) * 0.05) * env;
-                                short sample = (short)(s * 2400);
-                                bw.Write(sample);
-                            }
-                        }
-                        bw.Flush();
-                        return ms.ToArray();
-                    }
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static void PlayAscendingChime()
-        {
-            new Thread(() => {
-                try
-                {
-                    if (ascendingChimeBytes == null)
-                    {
-                        ascendingChimeBytes = GenerateBellChimeWav(new double[] { 784.0, 1046.5 }, new double[] { 0.09, 0.18 });
-                    }
-                    if (ascendingChimeBytes != null)
-                    {
-                        using (var ms = new MemoryStream(ascendingChimeBytes))
-                        {
-                            using (var sp = new SoundPlayer(ms))
-                            {
-                                sp.PlaySync();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        System.Media.SystemSounds.Asterisk.Play();
-                    }
-                }
-                catch
-                {
-                    try { System.Media.SystemSounds.Asterisk.Play(); } catch { }
-                }
-            }) { IsBackground = true }.Start();
-        }
-
-        private static void PlayDescendingChime()
-        {
-            new Thread(() => {
-                try
-                {
-                    if (descendingChimeBytes == null)
-                    {
-                        descendingChimeBytes = GenerateBellChimeWav(new double[] { 1046.5, 784.0 }, new double[] { 0.09, 0.18 });
-                    }
-                    if (descendingChimeBytes != null)
-                    {
-                        using (var ms = new MemoryStream(descendingChimeBytes))
-                        {
-                            using (var sp = new SoundPlayer(ms))
-                            {
-                                sp.PlaySync();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        System.Media.SystemSounds.Asterisk.Play();
-                    }
-                }
-                catch
-                {
-                    try { System.Media.SystemSounds.Asterisk.Play(); } catch { }
-                }
-            }) { IsBackground = true }.Start();
-        }
 
         private void SetAsPrimaryDevice(string deviceId)
         {
@@ -1357,10 +1209,6 @@ namespace RazerBatteryTray
             if (lblLiveRateBadge != null) lblLiveRateBadge.Visible = false;
             if (lblGameRateTitle != null) lblGameRateTitle.Visible = false;
             if (btnGameRates != null) { for (int i = 0; i < btnGameRates.Length; i++) if (btnGameRates[i] != null) btnGameRates[i].Visible = false; }
-            if (lblNotifyModeTitle != null) lblNotifyModeTitle.Visible = false;
-            if (chkNotifyOsd != null) chkNotifyOsd.Visible = false;
-            if (chkNotifyToast != null) chkNotifyToast.Visible = false;
-            if (chkNotifySound != null) chkNotifySound.Visible = false;
             if (autoGameRateMenu != null) autoGameRateMenu.Visible = false;
 
             if (isGamepad)
@@ -1843,7 +1691,7 @@ namespace RazerBatteryTray
                 if (lblDpiTitle != null) lblDpiTitle.Visible = true;
                 if (lblRateTitle != null) lblRateTitle.Visible = true;
 
-                int targetPerfH = autoGameRateEnabled ? (int)(236 * dpiScale) : (int)(142 * dpiScale);
+                int targetPerfH = autoGameRateEnabled ? (int)(212 * dpiScale) : (int)(142 * dpiScale);
                 AdjustPerformanceCardHeight(targetPerfH);
 
                 if (chkAutoGameRate != null)
@@ -1876,10 +1724,6 @@ namespace RazerBatteryTray
                         }
                     }
                 }
-                if (lblNotifyModeTitle != null) lblNotifyModeTitle.Visible = autoGameRateEnabled;
-                if (chkNotifyOsd != null) { chkNotifyOsd.Visible = autoGameRateEnabled; chkNotifyOsd.Checked = gameRateNotifyOsd; }
-                if (chkNotifyToast != null) { chkNotifyToast.Visible = autoGameRateEnabled; chkNotifyToast.Checked = gameRateNotifyToast; }
-                if (chkNotifySound != null) { chkNotifySound.Visible = autoGameRateEnabled; chkNotifySound.Checked = gameRateNotifySound; }
                 if (autoGameRateMenu != null) autoGameRateMenu.Visible = true;
                 if (info.DpiStages != null && info.DpiStages.Length > 0)
                 {
