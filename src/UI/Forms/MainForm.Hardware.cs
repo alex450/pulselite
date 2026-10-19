@@ -1248,6 +1248,7 @@ namespace RazerBatteryTray
             bool isLogitech = (info.Brand == "Logitech" || info.Brand == "罗技");
             bool isVgn = (info.Brand == "VGN");
             bool isRazer = (info.Brand == "Razer" || (info.DeviceId != null && info.DeviceId.StartsWith("Razer:1532:")));
+            bool isValkyrieMouse = (info.Brand == "Valkyrie" && info.Category == DeviceCategory.Mouse);
 
             int secW = cardPerformance.ClientSize.Width - (int)(32 * dpiScale);
 
@@ -1730,39 +1731,39 @@ namespace RazerBatteryTray
                 if (dpiMenu != null) dpiMenu.Visible = false;
                 if (rateMenu != null) rateMenu.Visible = false;
             }
-            else if (isRazer)
+            else if (isRazer || isValkyrieMouse)
             {
-                if (lblPerfTitle != null) lblPerfTitle.Text = "鼠标性能与档位调节";
+                if (lblPerfTitle != null) lblPerfTitle.Text = isValkyrieMouse ? "瓦尔基里鼠标性能与档位调节" : "鼠标性能与档位调节";
                 if (rateMenu != null) rateMenu.Visible = true;
 
                 if (lblDpiTitle != null) lblDpiTitle.Visible = true;
                 if (lblRateTitle != null) lblRateTitle.Visible = true;
 
-                int targetPerfH = autoGameRateEnabled ? (int)(212 * dpiScale) : (int)(142 * dpiScale);
+                int targetPerfH = (isRazer && autoGameRateEnabled) ? (int)(212 * dpiScale) : (int)(142 * dpiScale);
                 AdjustPerformanceCardHeight(targetPerfH);
 
                 if (chkAutoGameRate != null)
                 {
-                    chkAutoGameRate.Visible = true;
+                    chkAutoGameRate.Visible = isRazer;
                     chkAutoGameRate.Checked = autoGameRateEnabled;
                 }
                 if (btnManageGames != null)
                 {
-                    btnManageGames.Visible = autoGameRateEnabled;
+                    btnManageGames.Visible = isRazer && autoGameRateEnabled;
                 }
                 if (chkHoldGameUntilExit != null)
                 {
-                    chkHoldGameUntilExit.Visible = autoGameRateEnabled;
+                    chkHoldGameUntilExit.Visible = isRazer && autoGameRateEnabled;
                     chkHoldGameUntilExit.Checked = holdGameRateUntilExit;
                 }
-                if (lblGameRateTitle != null) lblGameRateTitle.Visible = autoGameRateEnabled;
+                if (lblGameRateTitle != null) lblGameRateTitle.Visible = isRazer && autoGameRateEnabled;
                 if (btnGameRates != null)
                 {
                     for (int i = 0; i < btnGameRates.Length; i++)
                     {
                         if (btnGameRates[i] != null)
                         {
-                            btnGameRates[i].Visible = autoGameRateEnabled;
+                            btnGameRates[i].Visible = isRazer && autoGameRateEnabled;
                             if (i < pollingRateValues.Length)
                             {
                                 btnGameRates[i].Text = pollingRateValues[i] + " Hz";
@@ -1771,7 +1772,7 @@ namespace RazerBatteryTray
                         }
                     }
                 }
-                if (autoGameRateMenu != null) autoGameRateMenu.Visible = true;
+                if (autoGameRateMenu != null) autoGameRateMenu.Visible = isRazer;
                 if (info.DpiStages != null && info.DpiStages.Length > 0)
                 {
                     bool differs = false;

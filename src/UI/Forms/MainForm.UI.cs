@@ -949,16 +949,39 @@ namespace RazerBatteryTray
             if (curDev != null && curDev.Brand == "Razer")
             {
                 string devId = curDev.DeviceId;
+                int[] stagesX = (curDev.DpiStages != null && curDev.DpiStages.Length > 0) ? curDev.DpiStages : dpiStageList.ToArray();
+                int[] stagesY = (curDev.DpiStagesY != null && curDev.DpiStagesY.Length == stagesX.Length) ? curDev.DpiStagesY : stagesX;
+                int targetDpiY = (stagesY != null && stagesY.Length > index) ? stagesY[index] : targetDpi;
                 new Thread(() => {
                     bool ok = RazerDeviceHelper.SetRazerDpiStage(targetStage, devId);
                     this.BeginInvoke(new Action(() => {
                         if (curDev != null)
                         {
                             curDev.Dpi = targetDpi;
+                            curDev.DpiY = targetDpiY;
                             curDev.DpiStage = targetStage;
                         }
                         HighlightDpiStage(targetStage);
                         OnDpiChanged("Razer", targetDpi, targetStage, dpiStageList.Count, devId);
+                    }));
+                }) { IsBackground = true }.Start();
+            }
+            else if (curDev != null && curDev.Brand == "Valkyrie")
+            {
+                int[] stagesX = (curDev.DpiStages != null && curDev.DpiStages.Length > 0) ? curDev.DpiStages : dpiStageList.ToArray();
+                int[] stagesY = (curDev.DpiStagesY != null && curDev.DpiStagesY.Length == stagesX.Length) ? curDev.DpiStagesY : stagesX;
+                int targetDpiY = (stagesY != null && stagesY.Length > index) ? stagesY[index] : targetDpi;
+                new Thread(() => {
+                    bool ok = ValkyrieDeviceHelper.UpdateValkyrieHardwareStages(targetStage, stagesX, stagesY);
+                    this.BeginInvoke(new Action(() => {
+                        if (curDev != null)
+                        {
+                            curDev.Dpi = targetDpi;
+                            curDev.DpiY = targetDpiY;
+                            curDev.DpiStage = targetStage;
+                        }
+                        HighlightDpiStage(targetStage);
+                        OnDpiChanged("Valkyrie", targetDpi, targetStage, dpiStageList.Count);
                     }));
                 }) { IsBackground = true }.Start();
             }
@@ -1274,44 +1297,70 @@ namespace RazerBatteryTray
         private void OpenDpiManagementDialog()
         {
             var curDev = selectedDevice;
-            if (curDev == null || curDev.Brand != "Razer") return;
+            if (curDev == null || (curDev.Brand != "Razer" && curDev.Brand != "Valkyrie")) return;
 
             int curStage = curDev.DpiStage > 0 ? curDev.DpiStage : 1;
-            int[] stages = (curDev.DpiStages != null && curDev.DpiStages.Length > 0) ? curDev.DpiStages : dpiStageList.ToArray();
-            string devName = !string.IsNullOrEmpty(curDev.DisplayName) ? curDev.DisplayName : "Razer Mouse";
-            int pid = 0;
-            if (!string.IsNullOrEmpty(curDev.HardwareId) && curDev.HardwareId.Contains(":"))
+            int[] stagesX = (curDev.DpiStages != null && curDev.DpiStages.Length > 0) ? curDev.DpiStages : dpiStageList.ToArray();
+            int[] stagesY = (curDev.DpiStagesY != null && curDev.DpiStagesY.Length == stagesX.Length) ? curDev.DpiStagesY : stagesX;
+            bool isXy = curDev.IsXyIndependent;
+            double xyRatio = (curDev.XyRatio > 0) ? curDev.XyRatio : 1.0;
+            string devName = !string.IsNullOrEmpty(curDev.DisplayName) ? curDev.DisplayName : (curDev.Brand == "Valkyrie" ? "Valkyrie Mouse" : "Razer Mouse");
+
+            RazerDeviceHelper.RazerDpiCapability cap;
+            if (curDev.Brand == "Valkyrie")
             {
-                string[] parts = curDev.HardwareId.Split(':');
-                if (parts.Length >= 3)
+                cap = new RazerDeviceHelper.RazerDpiCapability
                 {
-                    int.TryParse(parts[2], System.Globalization.NumberStyles.HexNumber, null, out pid);
+                    MinDpi = 100,
+                    MaxDpi = 26000,
+                    Step = 50,
+                    Description = "瓦尔基里高精度电竞光学传感器 (PAW3395/PAW3950)"
+                };
+            }
+            else
+            {
+                int pid = 0;
+                if (!string.IsNullOrEmpty(curDev.HardwareId) && curDev.HardwareId.Contains(":"))
+                {
+                    string[] parts = curDev.HardwareId.Split(':');
+                    if (parts.Length >= 3)
+                    {
+                        int.TryParse(parts[2], System.Globalization.NumberStyles.HexNumber, null, out pid);
+                    }
                 }
+                cap = RazerDeviceHelper.GetDpiCapability(devName, pid);
             }
 
-            var cap = RazerDeviceHelper.GetDpiCapability(devName, pid);
-
-            using (var dlg = new DpiManagementDialog(devName, stages, curStage, cap))
+            using (var dlg = new DpiManagementDialog(devName, stagesX, stagesY, isXy, xyRatio, curStage, cap))
             {
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    int[] newStages = dlg.Stages;
-                    if (newStages == null || newStages.Length == 0) return;
+                    int[] newStagesX = dlg.Stages;
+                    int[] newStagesY = dlg.StagesY;
+                    if (newStagesX == null || newStagesX.Length == 0) return;
+                    if (newStagesY == null || newStagesY.Length != newStagesX.Length) newStagesY = newStagesX;
 
-                    int activeStage = Math.Max(1, Math.Min(dlg.ActiveStage, newStages.Length));
-                    int activeDpi = newStages[activeStage - 1];
+                    int activeStage = Math.Max(1, Math.Min(dlg.ActiveStage, newStagesX.Length));
+                    int activeDpiX = newStagesX[activeStage - 1];
+                    int activeDpiY = newStagesY[activeStage - 1];
+                    bool newIsXy = dlg.IsXyIndependent;
+                    double newRatio = dlg.XyRatio;
 
                     // 1. Immediately apply to in-memory state on UI thread
-                    dpiStageList = new List<int>(newStages);
-                    dpiStageValues = newStages;
+                    dpiStageList = new List<int>(newStagesX);
+                    dpiStageValues = newStagesX;
                     SaveCustomDpiStages();
 
                     if (curDev != null)
                     {
-                        curDev.DpiStages = newStages;
-                        curDev.DpiStageCount = newStages.Length;
+                        curDev.DpiStages = newStagesX;
+                        curDev.DpiStagesY = newStagesY;
+                        curDev.IsXyIndependent = newIsXy;
+                        curDev.XyRatio = newRatio;
+                        curDev.DpiStageCount = newStagesX.Length;
                         curDev.DpiStage = activeStage;
-                        curDev.Dpi = activeDpi;
+                        curDev.Dpi = activeDpiX;
+                        curDev.DpiY = activeDpiY;
                     }
 
                     // 2. Immediately relayout, re-render and highlight main form DPI buttons
@@ -1327,13 +1376,21 @@ namespace RazerBatteryTray
                     if (cardPerformance != null) cardPerformance.Invalidate();
 
                     string targetDevId = curDev != null ? curDev.DeviceId : null;
-                    OnDpiChanged("Razer", activeDpi, activeStage, newStages.Length, targetDevId);
+                    string devBrand = curDev != null ? curDev.Brand : "Razer";
+                    OnDpiChanged(devBrand, activeDpiX, activeStage, newStagesX.Length, targetDevId);
                     UpdatePerformanceSection(curDev, curDev.BrandColor);
                     UpdateStatusDisplay();
 
                     // 3. Persist to hardware in background thread
                     new Thread(() => {
-                        RazerDeviceHelper.UpdateRazerHardwareStages(activeStage, newStages, targetDevId);
+                        if (devBrand == "Valkyrie")
+                        {
+                            ValkyrieDeviceHelper.UpdateValkyrieHardwareStages(activeStage, newStagesX, newStagesY);
+                        }
+                        else
+                        {
+                            RazerDeviceHelper.UpdateRazerHardwareStages(activeStage, newStagesX, newStagesY, targetDevId);
+                        }
                     }) { IsBackground = true }.Start();
                 }
             }
