@@ -910,7 +910,7 @@ namespace RazerBatteryTray
             btnDpiManage.Location = new Point(dpiStartX + count * (stageW + gap), r1Y);
             btnDpiManage.Size = new Size(manageBtnW, segH);
 
-            if (dpiMenu != null && selectedDevice != null && selectedDevice.Brand == "Razer")
+            if (dpiMenu != null && selectedDevice != null && (selectedDevice.Brand == "Razer" || selectedDevice.Brand == "Valkyrie"))
             {
                 dpiMenu.DropDownItems.Clear();
                 for (int i = 0; i < dpiStageList.Count; i++)
