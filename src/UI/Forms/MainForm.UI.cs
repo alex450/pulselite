@@ -217,7 +217,7 @@ namespace RazerBatteryTray
             }
             else
             {
-                card2H = (int)(218 * dpiScale);
+                card2H = (int)(253 * dpiScale);
             }
 
             cardPerformance = new RoundedCard();
@@ -422,10 +422,18 @@ namespace RazerBatteryTray
                 btnGameRates[i] = btn;
             }
 
-            // Row 6: 提醒方式设置
-            int gameNotifY = (int)(221 * dpiScale);
-            int notifStartX = cPad + (int)(64 * dpiScale);
-            int notifW = (secW - (int)(64 * dpiScale)) / 3;
+            // Row 6: 游戏退出前保持电竞回报率
+            chkHoldGameUntilExit = new ModernCheckBox();
+            chkHoldGameUntilExit.Text = "游戏退出前保持电竞回报率";
+            chkHoldGameUntilExit.Font = new Font("Microsoft YaHei UI", 8.5F, FontStyle.Regular, GraphicsUnit.Point);
+            chkHoldGameUntilExit.ForeColor = Color.FromArgb(210, 220, 240);
+            chkHoldGameUntilExit.Location = new Point(cPad, (int)(221 * dpiScale));
+            chkHoldGameUntilExit.Size = new Size(secW, (int)(22 * dpiScale));
+            chkHoldGameUntilExit.Visible = false;
+            chkHoldGameUntilExit.CheckedChanged += (s, e) => {
+                if (!isUpdatingUI) { holdGameRateUntilExit = chkHoldGameUntilExit.Checked; SaveConfig(); }
+            };
+            cardPerformance.Controls.Add(chkHoldGameUntilExit);
 
             RelayoutPerformanceControls();
 
@@ -1223,10 +1231,14 @@ namespace RazerBatteryTray
                 }
             }
 
-            // Row 6: 切换提醒方式 (恒定 Y = 221)
+            // Row 6: 游戏退出前保持电竞回报率 (恒定 Y = 221)
             int r6Y = (int)(221 * dpiScale);
-            int notifStartX = cPad + (int)(64 * dpiScale);
-            int notifW = (secW - (int)(64 * dpiScale)) / 3;
+            if (chkHoldGameUntilExit != null)
+            {
+                chkHoldGameUntilExit.Location = new Point(cPad, r6Y);
+                chkHoldGameUntilExit.Size = new Size(secW, (int)(22 * dpiScale));
+                chkHoldGameUntilExit.Visible = showExpanded;
+            }
         }
 
         private void HighlightDpiStage(int stage)
@@ -2399,7 +2411,7 @@ namespace RazerBatteryTray
                 }
                 else
                 {
-                    card2H = (int)(218 * dpiScale);
+                    card2H = (int)(253 * dpiScale);
                 }
                 if (cardPerformance != null)
                 {

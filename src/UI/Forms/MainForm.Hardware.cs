@@ -835,6 +835,40 @@ namespace RazerBatteryTray
             return false;
         }
 
+        private string NormalizeProcessName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return "";
+            string normalized = name.Trim().ToLowerInvariant();
+            if (!normalized.EndsWith(".exe")) normalized += ".exe";
+            return normalized;
+        }
+
+        private bool IsActiveGameProcessRunning()
+        {
+            string target = activeGameProcessName;
+            if (string.IsNullOrEmpty(target)) return false;
+            bool found = false;
+            try
+            {
+                Process[] all = Process.GetProcesses();
+                for (int i = 0; i < all.Length; i++)
+                {
+                    Process p = all[i];
+                    try
+                    {
+                        if (!found && string.Equals(NormalizeProcessName(p.ProcessName), target, StringComparison.OrdinalIgnoreCase))
+                        {
+                            found = true;
+                        }
+                    }
+                    catch { }
+                    finally { p.Dispose(); }
+                }
+            }
+            catch { }
+            return found;
+        }
+
         private void StartGameMonitor()
         {
             if (gameMonitorTimer != null) return;
@@ -847,6 +881,7 @@ namespace RazerBatteryTray
                 if (curDev.Brand != "Razer" && curDev.Brand != "Valkyrie" && curDev.Brand != "Logitech" && curDev.Brand != "罗技" && curDev.Brand != "Rapoo") return;
 
                 string procTitle = "";
+                string hitProcess = "";
                 bool isGame = false;
 
                 // Priority 1: Check foreground window against user's monitored game processes
@@ -865,6 +900,7 @@ namespace RazerBatteryTray
                                 if (ContainsGameProcess(pName))
                                 {
                                     isGame = true;
+                                    hitProcess = pName;
                                     procTitle = proc.MainWindowTitle;
                                     if (string.IsNullOrEmpty(procTitle)) procTitle = pName;
                                 }
@@ -881,6 +917,7 @@ namespace RazerBatteryTray
                     if (GameDetector.IsGameRunning(out fsTitle))
                     {
                         isGame = true;
+                        hitProcess = fsTitle;
                         procTitle = fsTitle;
                     }
                 }
@@ -889,6 +926,8 @@ namespace RazerBatteryTray
                 {
                     outOfGameTickCount = 0;
                     inGameTickCount++;
+                    string hitName = NormalizeProcessName(hitProcess);
+                    if (!string.IsNullOrEmpty(hitName)) activeGameProcessName = hitName;
                     if (inGameTickCount >= 2 && !isGamingActive)
                     {
                         isGamingActive = true; if (autoGameRateEnabled && autoGameDpiEnabled) { ApplyGameOptimization(true); } else
@@ -906,8 +945,14 @@ namespace RazerBatteryTray
                 {
                     inGameTickCount = 0;
                     outOfGameTickCount++;
-                    if (outOfGameTickCount >= 2 && isGamingActive)
+                    // 勾选后：只要触发本次优化的游戏进程仍在运行，焦点切走也不回落
+                    if (holdGameRateUntilExit && isGamingActive && IsActiveGameProcessRunning())
                     {
+                        outOfGameTickCount = 0;
+                    }
+                    else if (outOfGameTickCount >= 2 && isGamingActive)
+                    {
+                        activeGameProcessName = "";
                         isGamingActive = false; if (autoGameRateEnabled && autoGameDpiEnabled) { ApplyGameOptimization(false); } else
                         if (autoGameRateEnabled)
                         {
@@ -2305,7 +2350,7 @@ namespace RazerBatteryTray
 
                 bool supportsAutoGameRate = (isRazer || isLogitechMouse || isRapooMouse || isValkyrieMouse);
                 bool isOptExpanded = (autoGameRateEnabled || autoGameDpiEnabled);
-                int targetPerfH = (!supportsAutoGameRate || !isOptExpanded) ? (int)(148 * dpiScale) : (int)(218 * dpiScale);
+                int targetPerfH = (!supportsAutoGameRate || !isOptExpanded) ? (int)(148 * dpiScale) : (int)(253 * dpiScale);
                 AdjustPerformanceCardHeight(targetPerfH);
 
                 bool showExpanded = supportsAutoGameRate && isOptExpanded;

@@ -638,6 +638,9 @@ namespace RazerBatteryTray
         private bool lastLowAlertFired = false;
 
         private bool isUpdatingUI = false;
+        private bool holdGameRateUntilExit = false;
+        private string activeGameProcessName = "";
+        private ModernCheckBox chkHoldGameUntilExit;
 
         private int trayStyle = 1; // 固定使用“醒目数字能量表”
         private float dpiScale = 1.0f;
@@ -1508,6 +1511,9 @@ namespace RazerBatteryTray
                         var autoGameVal = key.GetValue("AutoGameRateEnabled");
 
                         if (autoGameVal != null) autoGameRateEnabled = (int)autoGameVal == 1;
+                        
+                        var holdRateVal = key.GetValue("HoldGameRateUntilExit");
+                        if (holdRateVal != null) holdGameRateUntilExit = (int)holdRateVal == 1;
 
 
 
@@ -1706,6 +1712,7 @@ namespace RazerBatteryTray
 
 
                 if (chkAutoGameRate != null) chkAutoGameRate.Checked = autoGameRateEnabled;
+                if (chkHoldGameUntilExit != null) chkHoldGameUntilExit.Checked = holdGameRateUntilExit;
 
                 if (autoGameRateToggleItem != null) autoGameRateToggleItem.Checked = autoGameRateEnabled;
 
@@ -1764,6 +1771,7 @@ namespace RazerBatteryTray
                         key.SetValue("AutoGameOptEnabled", (autoGameRateEnabled || autoGameDpiEnabled) ? 1 : 0);
 
                         key.SetValue("AutoGameRateEnabled", autoGameRateEnabled ? 1 : 0);
+                        key.SetValue("HoldGameRateUntilExit", holdGameRateUntilExit ? 1 : 0);
 
                         key.SetValue("AutoGameDpiEnabled", autoGameDpiEnabled ? 1 : 0);
 
