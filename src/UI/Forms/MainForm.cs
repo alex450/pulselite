@@ -222,21 +222,11 @@ namespace RazerBatteryTray
 
         private ToolStripMenuItem lowBatteryAlertMenuItem;
 
-        private ToolStripMenuItem dpiOsdMenuItem;
-
         private ToolStripMenuItem styleCapsuleItem;
 
         private ToolStripMenuItem styleNumItem;
 
         private ToolStripMenuItem stylePureNumItem;
-
-        private ToolStripMenuItem osdStyleMenu;
-
-        private ToolStripMenuItem osdStyleCapsuleItem;
-
-        private ToolStripMenuItem osdStyleGaugeItem;
-
-        private ToolStripMenuItem osdStyleCompactItem;
 
         private ToolStripMenuItem int30sMenuItem;
 
@@ -432,10 +422,6 @@ namespace RazerBatteryTray
         private int pendingLogitechDpiCandidate = -1;
 
         private int pendingLogitechStageCandidate = -1;
-
-        private DpiOsdForm osdForm;
-
-
 
         // Visual controls - Card 1: Status
 
@@ -659,14 +645,6 @@ namespace RazerBatteryTray
 
         private ModernSegmentButton btnInt5m;
 
-        private Label lblOsdStyleTitle;
-
-        private ModernSegmentButton btnOsdStyleCapsule;
-
-        private ModernSegmentButton btnOsdStyleGauge;
-
-        private ModernSegmentButton btnOsdStyleCompact;
-
         private SubtleDivider divSettings;
 
         private ModernCheckBox chkAutoStart;
@@ -674,8 +652,6 @@ namespace RazerBatteryTray
         private ModernCheckBox chkAutoStartShowUI;
 
         private ModernCheckBox chkLowAlert;
-
-        private ModernCheckBox chkDpiOsd;
 
         private Label lblSettingsTip;
 
@@ -703,15 +679,11 @@ namespace RazerBatteryTray
 
         private bool lowBatteryAlertEnabled = true;
 
-        private bool dpiOsdEnabled = true;
-
         private bool lastLowAlertFired = false;
 
         private bool isUpdatingUI = false;
 
         private int trayStyle = 0; // 0 = Capsule, 1 = Number, 2 = Pure Number
-
-        private int osdStyle = 0; // 0 = Centered Capsule, 1 = Stepped Gauge, 2 = Compact Top-Right
 
         private float dpiScale = 1.0f;
 
@@ -845,10 +817,6 @@ namespace RazerBatteryTray
 
 
 
-            osdForm = new DpiOsdForm(dpiScale);
-
-
-
             RazerDeviceHelper.LoadHardwareCache();
 
             RapooDeviceHelper.LoadHardwareCache();
@@ -861,8 +829,10 @@ namespace RazerBatteryTray
 
             LogitechDeviceHelper.LoadHardwareCache();
 
-            HyperXDeviceHelper.LoadHardwareCache();
-
+            HyperXDeviceHelper.LoadHardwareCache();
+
+
+
             SteelSeriesDeviceHelper.LoadHardwareCache();
 
             InitializeFormUI();
@@ -1077,16 +1047,6 @@ namespace RazerBatteryTray
 
 
             this.dpiScale = newScale;
-
-
-
-            if (osdForm != null && !osdForm.IsDisposed)
-
-            {
-
-                osdForm.UpdateDpiScale(dpiScale);
-
-            }
 
 
 
@@ -1499,42 +1459,6 @@ namespace RazerBatteryTray
 
 
 
-        private void SetDpiOsdEnabled(bool enabled, bool showNotification = false)
-
-        {
-
-            dpiOsdEnabled = enabled;
-
-
-
-            isUpdatingUI = true;
-
-            try
-
-            {
-
-                if (chkDpiOsd != null && chkDpiOsd.Checked != enabled) chkDpiOsd.Checked = enabled;
-
-                if (dpiOsdMenuItem != null) dpiOsdMenuItem.Checked = enabled;
-
-            }
-
-            finally
-
-            {
-
-                isUpdatingUI = false;
-
-            }
-
-
-
-            SaveConfig();
-
-        }
-
-
-
         private void SetInterval(int ms, bool showNotification = false)
 
         {
@@ -1645,82 +1569,6 @@ namespace RazerBatteryTray
 
 
 
-        private void SetOsdStyle(int style, bool showNotification = false)
-
-        {
-
-            osdStyle = style;
-
-            if (osdStyle < 0 || osdStyle > 2) osdStyle = 0;
-
-            SaveConfig();
-
-
-
-            if (osdForm != null)
-
-            {
-
-                osdForm.OsdStyle = osdStyle;
-
-            }
-
-
-
-            isUpdatingUI = true;
-
-            try
-
-            {
-
-                if (osdStyleCapsuleItem != null) osdStyleCapsuleItem.Checked = (osdStyle == 0);
-
-                if (osdStyleGaugeItem != null) osdStyleGaugeItem.Checked = (osdStyle == 1);
-
-                if (osdStyleCompactItem != null) osdStyleCompactItem.Checked = (osdStyle == 2);
-
-
-
-                if (btnOsdStyleCapsule != null) btnOsdStyleCapsule.Selected = (osdStyle == 0);
-
-                if (btnOsdStyleGauge != null) btnOsdStyleGauge.Selected = (osdStyle == 1);
-
-                if (btnOsdStyleCompact != null) btnOsdStyleCompact.Selected = (osdStyle == 2);
-
-            }
-
-            finally
-
-            {
-
-                isUpdatingUI = false;
-
-            }
-
-
-
-            // Trigger instant live preview so the user immediately sees their chosen style!
-
-            if (dpiOsdEnabled && osdForm != null)
-
-            {
-
-                int previewDpi = (lastInfo != null && lastInfo.Dpi > 0) ? lastInfo.Dpi : 3000;
-
-                int previewStage = (lastInfo != null && lastInfo.DpiStage > 0) ? lastInfo.DpiStage : 4;
-
-                int previewCount = (lastInfo != null && lastInfo.DpiStageCount > 0) ? lastInfo.DpiStageCount : 5;
-
-                string b = (selectedDevice != null) ? selectedDevice.Brand : ((lastInfo != null) ? lastInfo.Brand : "Razer");
-
-                osdForm.ShowDpi(previewDpi, previewStage, previewCount, b);
-
-            }
-
-        }
-
-
-
         private void UpdateMenuStatusTexts()
 
         {
@@ -1769,16 +1617,6 @@ namespace RazerBatteryTray
 
             }
 
-            if (dpiOsdMenuItem != null)
-
-            {
-
-                dpiOsdMenuItem.Text = "DPI 切换屏幕提示 (OSD)";
-
-                dpiOsdMenuItem.Checked = dpiOsdEnabled;
-
-            }
-
         }
 
 
@@ -1805,12 +1643,6 @@ namespace RazerBatteryTray
 
 
 
-                        var dVal = key.GetValue("DpiOsdAlert");
-
-                        if (dVal != null) dpiOsdEnabled = (int)dVal == 1;
-
-
-
                         var autoShowVal = key.GetValue("AutoStartShowUI");
 
                         if (autoShowVal != null) autoStartShowMainWindow = (int)autoShowVal == 1;
@@ -1831,17 +1663,6 @@ namespace RazerBatteryTray
 
 
 
-                        var oVal = key.GetValue("OsdStyle");
-
-                        if (oVal != null)
-
-                        {
-
-                            osdStyle = (int)oVal;
-
-                            if (osdStyle < 0 || osdStyle > 2) osdStyle = 0;
-
-                        }
 
 
 
@@ -2061,8 +1882,6 @@ namespace RazerBatteryTray
 
                 if (chkLowAlert != null) chkLowAlert.Checked = lowBatteryAlertEnabled;
 
-                if (chkDpiOsd != null) chkDpiOsd.Checked = dpiOsdEnabled;
-
                 if (chkAutoStart != null) chkAutoStart.Checked = autoStart;
 
                 if (chkAutoStartShowUI != null)
@@ -2098,22 +1917,6 @@ namespace RazerBatteryTray
                 if (btnStyleNum != null) btnStyleNum.Selected = (trayStyle == 1);
 
                 if (btnStylePureNum != null) btnStylePureNum.Selected = (trayStyle == 2);
-
-
-
-                if (osdForm != null) osdForm.OsdStyle = osdStyle;
-
-                if (osdStyleCapsuleItem != null) osdStyleCapsuleItem.Checked = (osdStyle == 0);
-
-                if (osdStyleGaugeItem != null) osdStyleGaugeItem.Checked = (osdStyle == 1);
-
-                if (osdStyleCompactItem != null) osdStyleCompactItem.Checked = (osdStyle == 2);
-
-                if (btnOsdStyleCapsule != null) btnOsdStyleCapsule.Selected = (osdStyle == 0);
-
-                if (btnOsdStyleGauge != null) btnOsdStyleGauge.Selected = (osdStyle == 1);
-
-                if (btnOsdStyleCompact != null) btnOsdStyleCompact.Selected = (osdStyle == 2);
 
 
 
@@ -2191,13 +1994,9 @@ namespace RazerBatteryTray
 
                         key.SetValue("LowBatteryAlert", lowBatteryAlertEnabled ? 1 : 0);
 
-                        key.SetValue("DpiOsdAlert", dpiOsdEnabled ? 1 : 0);
-
                         key.SetValue("AutoStartShowUI", autoStartShowMainWindow ? 1 : 0);
 
                         key.SetValue("TrayIconStyle", trayStyle);
-
-                        key.SetValue("OsdStyle", osdStyle);
 
                         key.SetValue("RefreshInterval", userSelectedInterval);
 

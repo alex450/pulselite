@@ -43,12 +43,6 @@ namespace RazerBatteryTray
                 try
                 {
                     // 1. 若用户未开启 DPI OSD 提示且主窗口未在前台显示，休眠省电零占用
-                    if (!dpiOsdEnabled && !this.Visible)
-                    {
-                        Thread.Sleep(800);
-                        continue;
-                    }
-
                     // 2. 收集当前需要监听 DPI 的雷蛇鼠标设备（仅针对鼠标类别，杜绝键盘等其他外设误入）
                     List<string> rzTargets = new List<string>();
                     if (selectedDevice != null && selectedDevice.Brand == "Razer" && selectedDevice.Category == DeviceCategory.Mouse)
@@ -337,14 +331,6 @@ namespace RazerBatteryTray
                 else if (brand == "Razer" && RazerDeviceHelper.CachedDpiY > 0) curDpiY = RazerDeviceHelper.CachedDpiY;
                 else if (brand == "Rapoo" && RapooDeviceHelper.CachedDpiY > 0) curDpiY = RapooDeviceHelper.CachedDpiY;
                 else curDpiY = newDpi;
-            }
-
-            if (dpiOsdEnabled && osdForm != null)
-            {
-                if ((DateTime.Now - lastGameOptOsdTime).TotalMilliseconds >= 2500)
-                {
-                    osdForm.ShowDpi(newDpi, curDpiY, newStage, stageCount, brand);
-                }
             }
 
             if (lastInfo != null && (string.IsNullOrEmpty(deviceId) ||
@@ -1053,12 +1039,6 @@ namespace RazerBatteryTray
                     UpdateStatusDisplay();
                     UpdatePollingRateDisplayStates();
 
-                    if (gameRateNotifyOsd && osdForm != null)
-                    {
-                        int stCount = (dpiStageValues != null) ? dpiStageValues.Length : 5;
-                        osdForm.ShowGameOptimization(isEntering, true, targetDpi, targetDpiY, targetStage, stCount, true, targetHz, brand);
-                    }
-
                     if (gameRateNotifyToast)
                     {
                         if (isEntering)
@@ -1112,19 +1092,6 @@ namespace RazerBatteryTray
 
                         UpdateStatusDisplay();
                         UpdatePollingRateDisplayStates();
-
-                        if (gameRateNotifyOsd && osdForm != null)
-                        {
-                            if (autoGameDpiEnabled)
-                            {
-                                int gameDpiVal = (dpiStageValues != null && gameDpiStage - 1 < dpiStageValues.Length) ? dpiStageValues[gameDpiStage - 1] : 800;
-                                osdForm.ShowGameOptimization(true, false, 0, 0, 0, 0, true, targetHz, brand);
-                            }
-                            else
-                            {
-                                osdForm.ShowGameOptimization(true, false, 0, 0, 0, 0, true, targetHz, brand);
-                            }
-                        }
 
                         if (gameRateNotifyToast)
                         {
@@ -1180,18 +1147,6 @@ namespace RazerBatteryTray
 
                         UpdateStatusDisplay();
                         UpdatePollingRateDisplayStates();
-
-                        if (gameRateNotifyOsd && osdForm != null)
-                        {
-                            if (autoGameDpiEnabled && curDev.DpiStage > 0)
-                            {
-                                osdForm.ShowGameOptimization(false, false, 0, 0, 0, 0, true, targetHz, brand);
-                            }
-                            else
-                            {
-                                osdForm.ShowGameOptimization(false, false, 0, 0, 0, 0, true, targetHz, brand);
-                            }
-                        }
 
                         if (gameRateNotifyToast)
                         {
@@ -1284,11 +1239,6 @@ namespace RazerBatteryTray
 
                         if (!autoGameRateEnabled)
                         {
-                            if (gameRateNotifyOsd && osdForm != null)
-                            {
-                                int effTargetDpiY = (curDev != null && curDev.DpiStagesY != null && curDev.DpiStagesY.Length >= targetStage) ? curDev.DpiStagesY[targetStage - 1] : targetDpi; if (curDev != null) curDev.DpiY = effTargetDpiY; osdForm.ShowGameOptimization(isGamingActive, true, targetDpi, effTargetDpiY, targetStage, dpiStageValues != null ? dpiStageValues.Length : 5, false, 0, brand);
-                            }
-
                             if (gameRateNotifyToast)
                             {
                                 SafeShowBalloonTip(3000, "FerrisPulse · 电竞 DPI",
@@ -1368,11 +1318,6 @@ namespace RazerBatteryTray
 
                         if (!autoGameRateEnabled)
                         {
-                            if (gameRateNotifyOsd && osdForm != null)
-                            {
-                                int effTargetDpiY = (curDev != null && curDev.DpiStagesY != null && curDev.DpiStagesY.Length >= targetStage) ? curDev.DpiStagesY[targetStage - 1] : targetDpi; if (curDev != null) curDev.DpiY = effTargetDpiY; osdForm.ShowGameOptimization(isGamingActive, true, targetDpi, effTargetDpiY, targetStage, dpiStageValues != null ? dpiStageValues.Length : 5, false, 0, brand);
-                            }
-
                             if (gameRateNotifyToast)
                             {
                                 SafeShowBalloonTip(3000, "FerrisPulse · 常规 DPI",

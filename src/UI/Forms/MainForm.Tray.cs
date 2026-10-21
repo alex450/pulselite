@@ -356,39 +356,7 @@ namespace RazerBatteryTray
             styleMenu.DropDownItems.AddRange(new ToolStripItem[] { styleCapsuleItem, styleNumItem, stylePureNumItem });
             contextMenu.Items.Add(styleMenu);
 
-            osdStyleMenu = new ToolStripMenuItem("DPI 浮窗样式");
-            ConfigureSubMenuDropDown(osdStyleMenu.DropDown);
-            osdStyleCapsuleItem = new ToolStripMenuItem("居中电竞胶囊", null, (s, e) => {
-                SetOsdStyle(0, true);
-                osdStyleCapsuleItem.Checked = true;
-                osdStyleGaugeItem.Checked = false;
-                osdStyleCompactItem.Checked = false;
-            });
-            osdStyleGaugeItem = new ToolStripMenuItem("右侧阶梯能量计", null, (s, e) => {
-                SetOsdStyle(1, true);
-                osdStyleCapsuleItem.Checked = false;
-                osdStyleGaugeItem.Checked = true;
-                osdStyleCompactItem.Checked = false;
-            });
-            osdStyleCompactItem = new ToolStripMenuItem("顶置微型指示段", null, (s, e) => {
-                SetOsdStyle(2, true);
-                osdStyleCapsuleItem.Checked = false;
-                osdStyleGaugeItem.Checked = false;
-                osdStyleCompactItem.Checked = true;
-            });
-            osdStyleCapsuleItem.Checked = (osdStyle == 0);
-            osdStyleGaugeItem.Checked = (osdStyle == 1);
-            osdStyleCompactItem.Checked = (osdStyle == 2);
-            osdStyleMenu.DropDownItems.AddRange(new ToolStripItem[] { osdStyleCapsuleItem, osdStyleGaugeItem, osdStyleCompactItem });
-            contextMenu.Items.Add(osdStyleMenu);
-
             contextMenu.Items.Add(new ToolStripSeparator());
-
-            dpiOsdMenuItem = new ToolStripMenuItem("DPI 切换屏幕提示 (OSD)", null, (s, e) => {
-                SetDpiOsdEnabled(!dpiOsdEnabled, true);
-                dpiOsdMenuItem.Checked = dpiOsdEnabled;
-            });
-            contextMenu.Items.Add(dpiOsdMenuItem);
 
             lowBatteryAlertMenuItem = new ToolStripMenuItem("低电量气泡通知 (≤20%)", null, (s, e) => {
                 SetLowBatteryAlert(!lowBatteryAlertEnabled, true);
@@ -1588,10 +1556,6 @@ namespace RazerBatteryTray
             {
                 trayIcon.Visible = false;
                 trayIcon.Dispose();
-            }
-            if (osdForm != null && !osdForm.IsDisposed)
-            {
-                osdForm.Dispose();
             }
             Application.Exit();
         }

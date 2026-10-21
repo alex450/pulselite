@@ -945,39 +945,6 @@ namespace RazerBatteryTray
             // Row 3: DPI 浮窗样式 (居中胶囊 / 阶梯能量 / 顶置微标)
             int row3Y = (int)(112 * dpiScale);
 
-            lblOsdStyleTitle = new Label();
-            lblOsdStyleTitle.Text = "DPI 浮窗样式";
-            lblOsdStyleTitle.Font = new Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblOsdStyleTitle.ForeColor = Color.FromArgb(160, 168, 185);
-            lblOsdStyleTitle.BackColor = Color.Transparent;
-            lblOsdStyleTitle.Location = new Point(cPad, row3Y + (int)(2 * dpiScale));
-            lblOsdStyleTitle.Size = new Size(lblTitleW, (int)(22 * dpiScale));
-            cardSettings.Controls.Add(lblOsdStyleTitle);
-
-            btnOsdStyleCapsule = new ModernSegmentButton();
-            btnOsdStyleCapsule.Text = "居中胶囊";
-            btnOsdStyleCapsule.Font = new Font("Microsoft YaHei UI", 8.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnOsdStyleCapsule.Location = new Point(seg1X, row3Y);
-            btnOsdStyleCapsule.Size = new Size(seg2W, card3SegH);
-            btnOsdStyleCapsule.Click += (s, e) => SetOsdStyle(0, true);
-            cardSettings.Controls.Add(btnOsdStyleCapsule);
-
-            btnOsdStyleGauge = new ModernSegmentButton();
-            btnOsdStyleGauge.Text = "阶梯能量";
-            btnOsdStyleGauge.Font = new Font("Microsoft YaHei UI", 8.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnOsdStyleGauge.Location = new Point(seg1X + seg2W + seg2Gap, row3Y);
-            btnOsdStyleGauge.Size = new Size(seg2W, card3SegH);
-            btnOsdStyleGauge.Click += (s, e) => SetOsdStyle(1, true);
-            cardSettings.Controls.Add(btnOsdStyleGauge);
-
-            btnOsdStyleCompact = new ModernSegmentButton();
-            btnOsdStyleCompact.Text = "顶置微标";
-            btnOsdStyleCompact.Font = new Font("Microsoft YaHei UI", 8.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnOsdStyleCompact.Location = new Point(seg1X + (seg2W + seg2Gap) * 2, row3Y);
-            btnOsdStyleCompact.Size = new Size(seg2W, card3SegH);
-            btnOsdStyleCompact.Click += (s, e) => SetOsdStyle(2, true);
-            cardSettings.Controls.Add(btnOsdStyleCompact);
-
             // Row 4: Modern subtle divider
             divSettings = new SubtleDivider();
             divSettings.Location = new Point(cPad, (int)(150 * dpiScale));
@@ -1023,17 +990,6 @@ namespace RazerBatteryTray
                 SetLowBatteryAlert(chkLowAlert.Checked);
             };
             cardSettings.Controls.Add(chkLowAlert);
-
-            chkDpiOsd = new ModernCheckBox();
-            chkDpiOsd.Text = "DPI 切换屏幕提示 (OSD)";
-            chkDpiOsd.Font = new Font("Microsoft YaHei UI", 8.8F, FontStyle.Regular, GraphicsUnit.Point);
-            chkDpiOsd.Location = new Point(cPad + chkW + chkGap, chkY2);
-            chkDpiOsd.Size = new Size(chkW, chkH);
-            chkDpiOsd.CheckedChanged += (s, e) => {
-                if (isUpdatingUI) return;
-                SetDpiOsdEnabled(chkDpiOsd.Checked);
-            };
-            cardSettings.Controls.Add(chkDpiOsd);
 
             // Note inside Card 3
             lblSettingsTip = new Label();
@@ -2656,27 +2612,6 @@ namespace RazerBatteryTray
                     }
 
                     int row3Y = (int)(112 * dpiScale);
-                    if (lblOsdStyleTitle != null)
-                    {
-                        lblOsdStyleTitle.Location = new Point(cPad, row3Y + (int)(2 * dpiScale));
-                        lblOsdStyleTitle.Size = new Size(lblTitleW, (int)(22 * dpiScale));
-                    }
-                    if (btnOsdStyleCapsule != null)
-                    {
-                        btnOsdStyleCapsule.Location = new Point(seg1X, row3Y);
-                        btnOsdStyleCapsule.Size = new Size(seg2W, segH);
-                    }
-                    if (btnOsdStyleGauge != null)
-                    {
-                        btnOsdStyleGauge.Location = new Point(seg1X + seg2W + seg2Gap, row3Y);
-                        btnOsdStyleGauge.Size = new Size(seg2W, segH);
-                    }
-                    if (btnOsdStyleCompact != null)
-                    {
-                        btnOsdStyleCompact.Location = new Point(seg1X + (seg2W + seg2Gap) * 2, row3Y);
-                        btnOsdStyleCompact.Size = new Size(seg2W, segH);
-                    }
-
                     if (divSettings != null)
                     {
                         divSettings.Location = new Point(cPad, (int)(150 * dpiScale));
@@ -2704,12 +2639,6 @@ namespace RazerBatteryTray
                         chkLowAlert.Location = new Point(cPad, chkY2);
                         chkLowAlert.Size = new Size(chkW, chkH);
                     }
-                    if (chkDpiOsd != null)
-                    {
-                        chkDpiOsd.Location = new Point(cPad + chkW + chkGap, chkY2);
-                        chkDpiOsd.Size = new Size(chkW, chkH);
-                    }
-
                     if (lblSettingsTip != null)
                     {
                         lblSettingsTip.Location = new Point(cPad, (int)(218 * dpiScale));
