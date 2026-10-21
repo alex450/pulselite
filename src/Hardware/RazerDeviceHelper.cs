@@ -5,7 +5,7 @@
 //   雷蛇 (Razer) 私有 HID 协议通信实现：
 //   1. 扫描与识别雷蛇 2.4G 接收器与有线/无线鼠标 (VID 0x1532)
 //   2. 构造与发送 90 字节私有报文读取硬件电池百分比与充电状态
-//   3. 实时查询与固化写入板载 DPI 档位与 8000Hz 超高回报率
+//   3. 实时查询与固化写入板载 DPI 档位与 8000Hz 超高回报率 (全系支持 Focus Pro 35K Gen-2 与巴蛇 V3 专业版 35K)
 // 依赖关系: NativeMethods.cs, MouseBatteryInfo.cs, RazerDeviceHardwareState.cs
 //
 // ⚠️ AI 维护准则 (AI MAINTENANCE DIRECTIVE - DO NOT REMOVE) ⚠️:
@@ -85,6 +85,9 @@ namespace RazerBatteryTray
                 case 0x00B5: return 0x00B4; // Viper V2 Pro Dongle -> Wired
                 case 0x00A6: return 0x00A5; // Cobra Pro Dongle -> Wired
                 case 0x009B: return 0x009A; // Basilisk V3 Pro Dongle -> Wired
+                case 0x00AB: return 0x00AA; // Basilisk V3 Pro Alternate Dongle -> Wired
+                case 0x00CD: return 0x00CC; // Basilisk V3 Pro 35K Dongle -> Wired
+                case 0x00D7: return 0x00D6; // Basilisk V3 Pro 35K Phantom Green Dongle -> Wired
                 case 0x00C5: return 0x00C4; // Basilisk V3 35K Dongle -> Wired
                 case 0x00A8: return 0x00A7; // Viper Mini Signature Edition Dongle -> Wired
                 case 0x0090: return 0x008F; // Naga V2 Pro Dongle -> Wired
@@ -230,7 +233,8 @@ namespace RazerBatteryTray
                 IsXyIndependent = (stState != null) ? stState.IsXyIndependent : false,
                 XyRatio = (stState != null && stState.XyRatio > 0) ? stState.XyRatio : 1.0,
                 PollingRate = (stState != null && stState.PollingRate > 0) ? stState.PollingRate : 1000,
-                SupportedPollingRates = new int[] { 1000, 2000, 4000, 8000 }
+                MaxPollingRate = GetMaxPollingRateForModel(curPid, !string.IsNullOrEmpty(resolvedModelName) ? resolvedModelName : (stState != null ? stState.DeviceName : CachedDeviceName)),
+                SupportedPollingRates = GetSupportedPollingRatesForModel(curPid, !string.IsNullOrEmpty(resolvedModelName) ? resolvedModelName : (stState != null ? stState.DeviceName : CachedDeviceName))
             };
         }
 
@@ -245,6 +249,82 @@ namespace RazerBatteryTray
                 return new byte[] { 0xFF, 0x1F, 0x3F };
             }
             return new byte[] { 0x1F, 0x3F, 0xFF };
+        }
+
+        /// <summary>
+        /// 根据雷蛇鼠标硬件型号 PID 与产品名称识别支持的回报率档位
+        /// 8K 超高刷电竞鼠标预设 125Hz ~ 8000Hz (含 125, 500 低档位)
+        /// 传统 1000Hz 鼠标预设 125Hz, 500Hz, 1000Hz
+        /// </summary>
+        public static int[] GetSupportedPollingRatesForModel(int pid, string modelName)
+        {
+            bool is8k = false;
+            if (pid != 0)
+            {
+                switch (pid)
+                {
+                    case 0x0071: // Viper 8KHz
+                    case 0x00B0: // DeathAdder V3 (Wired 8K)
+                    case 0x00B6: case 0x00B7: // DeathAdder V3 Pro
+                    case 0x00BE: case 0x00BF: // DeathAdder V4 Pro
+                    case 0x00B2: case 0x00B3: // DeathAdder V3 HyperSpeed
+                    case 0x00B4: case 0x00B5: // Viper V2 Pro
+                    case 0x00C0: case 0x00C1: case 0x00C2: case 0x00C3: // Viper V3 Pro
+                    case 0x00DE: case 0x00DF: // Viper V3 Pro SE
+                    case 0x00E5: case 0x00E6: // Viper V4 Pro
+                    case 0x00AC: case 0x00AD: // Viper V3 HyperSpeed
+                    case 0x00A7: case 0x00A8: // Viper Mini Signature Edition
+                    case 0x009A: case 0x009B: // Basilisk V3 Pro
+                    case 0x00AA: case 0x00AB: // Basilisk V3 Pro Alternate
+                    case 0x00CC: case 0x00CD: // Basilisk V3 Pro 35K
+                    case 0x00D6: case 0x00D7: // Basilisk V3 Pro 35K Phantom Green
+                    case 0x00C4: case 0x00C5: // Basilisk V3 35K
+                    case 0x00A5: case 0x00A6: // Cobra Pro
+                    case 0x008F: case 0x0090: // Naga V2 Pro
+                    case 0x0095: // Naga V2 HyperSpeed
+                    case 0x00B9: // HyperPolling Wireless Dongle
+                        is8k = true;
+                        break;
+                }
+            }
+
+            if (!is8k && !string.IsNullOrEmpty(modelName))
+            {
+                string name = modelName.ToLowerInvariant();
+                if (name.Contains("8k") || name.Contains("8000") ||
+                    name.Contains("v4 pro") || name.Contains("v3 pro") ||
+                    name.Contains("signature edition") || name.Contains("35k") ||
+                    name.Contains("hyperpolling"))
+                {
+                    is8k = true;
+                }
+            }
+
+            if (is8k)
+            {
+                return new int[] { 125, 250, 500, 1000, 2000, 4000, 8000 };
+            }
+            else
+            {
+                return new int[] { 125, 250, 500, 1000 };
+            }
+        }
+
+        /// <summary>
+        /// 取该型号支持的最高回报率，用于 MouseBatteryInfo.MaxPollingRate（UI 档位兜底与提示文案）。
+        /// </summary>
+        public static int GetMaxPollingRateForModel(int pid, string modelName)
+        {
+            int[] rates = GetSupportedPollingRatesForModel(pid, modelName);
+            int max = 1000;
+            if (rates != null)
+            {
+                for (int i = 0; i < rates.Length; i++)
+                {
+                    if (rates[i] > max) max = rates[i];
+                }
+            }
+            return max;
         }
 
         private static readonly Dictionary<int, string> RazerPidToOfficialName = new Dictionary<int, string>
@@ -283,16 +363,23 @@ namespace RazerBatteryTray
             { 0x00B0, "Razer DeathAdder V3" },
             { 0x00A2, "Razer DeathAdder V2 Pro" },
             { 0x00A3, "Razer DeathAdder V2 Pro" },
+            { 0x009C, "Razer DeathAdder V2 X HyperSpeed" },
             { 0x008A, "Razer DeathAdder V2" },
             { 0x007C, "Razer DeathAdder V2 Mini" },
             { 0x007D, "Razer DeathAdder V2 Mini" },
             { 0x005C, "Razer DeathAdder Elite" },
 
             // Basilisk series
+            { 0x00CC, "Razer Basilisk V3 Pro 35K" },
+            { 0x00CD, "Razer Basilisk V3 Pro 35K" },
+            { 0x00D6, "Razer Basilisk V3 Pro 35K (Phantom Green)" },
+            { 0x00D7, "Razer Basilisk V3 Pro 35K (Phantom Green)" },
             { 0x00C4, "Razer Basilisk V3 35K" },
             { 0x00C5, "Razer Basilisk V3 35K" },
             { 0x009A, "Razer Basilisk V3 Pro" },
             { 0x009B, "Razer Basilisk V3 Pro" },
+            { 0x00AA, "Razer Basilisk V3 Pro" },
+            { 0x00AB, "Razer Basilisk V3 Pro" },
             { 0x00B8, "Razer Basilisk V3" },
             { 0x0085, "Razer Basilisk X HyperSpeed" },
             { 0x0086, "Razer Basilisk X HyperSpeed" },
@@ -436,7 +523,17 @@ namespace RazerBatteryTray
             string combined = fallbackProdName ?? "";
             if (combined.IndexOf("DeathAdder", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer DeathAdder";
             if (combined.IndexOf("Viper", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Viper";
-            if (combined.IndexOf("Basilisk", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Basilisk";
+            if (combined.IndexOf("Basilisk", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (combined.IndexOf("35K", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return combined.IndexOf("Pro", StringComparison.OrdinalIgnoreCase) >= 0 ? "Razer Basilisk V3 Pro 35K" : "Razer Basilisk V3 35K";
+                }
+                if (combined.IndexOf("Pro", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Basilisk V3 Pro";
+                if (combined.IndexOf("Ultimate", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Basilisk Ultimate";
+                if (combined.IndexOf("HyperSpeed", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Basilisk X HyperSpeed";
+                return "Razer Basilisk";
+            }
             if (combined.IndexOf("Cobra", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Cobra";
             if (combined.IndexOf("Naga", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Naga";
             if (combined.IndexOf("Orochi", StringComparison.OrdinalIgnoreCase) >= 0) return "Razer Orochi";
@@ -505,7 +602,8 @@ namespace RazerBatteryTray
             if (curPid == 0x0099 || // Orochi V2
                 curPid == 0x0085 || curPid == 0x0086 || // Basilisk X HyperSpeed
                 curPid == 0x00AC || // Viper V3 HyperSpeed
-                curPid == 0x0095 || // DeathAdder V2 X HyperSpeed
+                curPid == 0x009C || // DeathAdder V2 X HyperSpeed (AA 干电池，纯无线)
+                curPid == 0x0095 || // Naga V2 HyperSpeed
                 curPid == 0x008D || curPid == 0x008E) // Atheris
             {
                 return true;
@@ -531,7 +629,7 @@ namespace RazerBatteryTray
                 curPid == 0x00C5 || curPid == 0x00C1 || curPid == 0x00C3 || curPid == 0x0088 ||
                 curPid == 0x0072 || curPid == 0x0090 || curPid == 0x00A3 || curPid == 0x00B3 ||
                 curPid == 0x0008 || curPid == 0x007B || curPid == 0x0092 || curPid == 0x00B9 ||
-                curPid == 0x00E6 || curPid == 0x00DF)
+                curPid == 0x00E6 || curPid == 0x00DF || curPid == 0x00CD || curPid == 0x00D7 || curPid == 0x00AB)
             {
                 return true;
             }
@@ -1134,6 +1232,7 @@ namespace RazerBatteryTray
                                                                             case 0x04: pollingRate = 2000; break;
                                                                             case 0x08: pollingRate = 1000; break;
                                                                             case 0x10: pollingRate = 500; break;
+                                                                            case 0x20: pollingRate = 250; break;
                                                                             case 0x40: pollingRate = 125; break;
                                                                         }
                                                                     }
@@ -1188,7 +1287,8 @@ namespace RazerBatteryTray
                                                         DpiStageCount = stageCount,
                                                         DpiStages = stageList,
                                                         PollingRate = pollingRate,
-                                                        SupportedPollingRates = new int[] { 1000, 2000, 4000, 8000 }
+                                                        MaxPollingRate = GetMaxPollingRateForModel(curPid, resolvedModelName),
+                                                        SupportedPollingRates = GetSupportedPollingRatesForModel(curPid, resolvedModelName)
                                                     };
 
                                                     // If already present: Wired connection takes precedence over Dongle!
@@ -1306,6 +1406,13 @@ namespace RazerBatteryTray
                 return active ?? list[0];
             }
             return new MouseBatteryInfo { IsConnected = false, IsSleeping = false, IsDonglePresent = false };
+        }
+
+        public static bool FastQueryDpi(out int curDpi, out int curDpiY, out int activeStage, out int stageCount, string targetDeviceId = null)
+        {
+            bool res = FastQueryDpi(out curDpi, out activeStage, out stageCount, targetDeviceId);
+            curDpiY = (CachedDpiY > 0) ? CachedDpiY : curDpi;
+            return res;
         }
 
         public static bool FastQueryDpi(out int curDpi, out int activeStage, out int stageCount, string targetDeviceId = null)
@@ -1782,8 +1889,20 @@ namespace RazerBatteryTray
         public static RazerDpiCapability GetDpiCapability(string deviceName, int pid)
         {
             string name = !string.IsNullOrEmpty(deviceName) ? deviceName.ToLowerInvariant() : "";
+            // DeathAdder V2 X HyperSpeed: 14K 光学传感器，50 DPI 步进
+            if (pid == 0x009C || name.Contains("deathadder v2 x"))
+            {
+                var cap14k = new RazerDpiCapability();
+                cap14k.MinDpi = 100;
+                cap14k.MaxDpi = 14000;
+                cap14k.Step = 50;
+                cap14k.Description = "Razer 14K 光学传感器";
+                return cap14k;
+            }
             // Focus Pro 35K Gen-2: DeathAdder V4 Pro, Viper V4 Pro, Viper V3 Pro, Basilisk V3 Pro 35K, etc.
-            if (pid == 0x00BF || pid == 0x00BE || pid == 0x00E6 || pid == 0x00E5 || pid == 0x00DF || pid == 0x00DE || name.Contains("v4 pro") || name.Contains("viper v3 pro") || name.Contains("35k"))
+            if (pid == 0x00BF || pid == 0x00BE || pid == 0x00E6 || pid == 0x00E5 || pid == 0x00DF || pid == 0x00DE ||
+                pid == 0x00CC || pid == 0x00CD || pid == 0x00D6 || pid == 0x00D7 || pid == 0x00C4 || pid == 0x00C5 ||
+                name.Contains("v4 pro") || name.Contains("viper v3 pro") || name.Contains("35k"))
             {
                 var cap = new RazerDpiCapability();
                 cap.MinDpi = 100;
@@ -1793,7 +1912,7 @@ namespace RazerBatteryTray
                 return cap;
             }
             // Focus Pro 30K: DeathAdder V3 Pro, Viper V2 Pro, Basilisk V3 Pro, Cobra Pro
-            if (pid == 0x00B7 || pid == 0x00B6 || pid == 0x00A6 || pid == 0x00A5 || pid == 0x009B || pid == 0x009A || pid == 0x00AC || pid == 0x00AB || name.Contains("v3 pro") || name.Contains("v2 pro") || name.Contains("cobra pro"))
+            if (pid == 0x00B7 || pid == 0x00B6 || pid == 0x00A6 || pid == 0x00A5 || pid == 0x009B || pid == 0x009A || pid == 0x00AA || pid == 0x00AC || pid == 0x00AB || name.Contains("v3 pro") || name.Contains("v2 pro") || name.Contains("cobra pro"))
             {
                 var cap = new RazerDpiCapability();
                 cap.MinDpi = 100;
@@ -2264,6 +2383,7 @@ namespace RazerBatteryTray
                 case 2000: rateByte = 0x04; break;
                 case 1000: rateByte = 0x08; break;
                 case 500:  rateByte = 0x10; break;
+                case 250:  rateByte = 0x20; break;
                 case 125:  rateByte = 0x40; break;
             }
 
