@@ -22,7 +22,7 @@ namespace RazerBatteryTray
     {
         private void InitializeFormUI()
         {
-            this.Text = "FerrisPulse · 灵脉";
+            this.Text = "Pulselite";
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = true;
