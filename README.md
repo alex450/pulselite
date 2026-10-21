@@ -1,4 +1,4 @@
-﻿# ⚡ PulseLite · 跨品牌外设电量与回报率调度器
+﻿﻿# ⚡ PulseLite · 跨品牌外设电量与回报率调度器
 
 <p align="center">
   <img src="app.png" width="108" height="108" alt="PulseLite Logo" />
@@ -13,20 +13,21 @@
   <a href="https://github.com/alex450/pulselite"><img src="https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?style=flat-square&logo=windows" alt="Platform" /></a>
   <a href="https://github.com/alex450/pulselite"><img src="https://img.shields.io/badge/.NET%20Framework-4.0%20(Pure%20Native)-512BD4?style=flat-square&logo=dotnet" alt=".NET Framework" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL%20v3.0-blue.svg?style=flat-square" alt="License: GPL v3" /></a>
-  <a href="https://github.com/Ferris-echo/FerrisPulse"><img src="https://img.shields.io/badge/Upstream-FerrisPulse%20v2.0.2-00ff88?style=flat-square" alt="Upstream" /></a>
+  <a href="https://github.com/Ferris-echo/FerrisPulse"><img src="https://img.shields.io/badge/Upstream-FerrisPulse%20v2.2.0-00ff88?style=flat-square" alt="Upstream" /></a>
 </p>
 
 ---
 
 ## 📖 这是什么
 
-**PulseLite** 是 [FerrisPulse · 灵脉](https://github.com/Ferris-echo/FerrisPulse) 的精简分支（基于上游 v2.0.2，遵循 GPLv3）。
+**PulseLite** 是 [FerrisPulse · 灵脉](https://github.com/Ferris-echo/FerrisPulse) 的精简分支（基于上游 v2.2.0，遵循 GPLv3）。
 
 它只保留"看电量 + 进游戏自动提回报率"这条主线，把打扰性的浮窗、切换提示音与样式选择全部砍掉：**没有 OSD 浮窗、没有切换提示音**，安安静静待在托盘里（低电量气泡提醒仍保留，可在设置里关掉）。
 
 ### ✅ 保留的能力
 
 * 🔋 **跨品牌电量读取**：雷蛇、罗技（Lightspeed / 优联）、NuPhy、ATK / VGN / VXE / 迈从 / 狼蛛，以及常见蓝牙耳机。
+* 🆕 **v2.2.0 新硬件**：赛睿 Nova5、HyperX、索尼 INZONE Buds、Apple/Beats、飞智 APEX 6、迈从 A5 V2 Ultra / G87 V2、雷蛇 DA V2X / 黑鲨 V2 Pro 等
 * 🎮 **全屏游戏自动切换回报率**：常规回报率与电竞回报率双档，命中守护列表的游戏自动切到 4000Hz / 8000Hz，离开游戏回落节能档。
 * 🔒 **「游戏退出前保持电竞回报率」**：勾选后，切出焦点（回桌面、开浏览器）不再回落，只有游戏进程真正退出才恢复——避免反复抖动。
 * 🎯 **雷蛇 DPI 档位**：板载档位读写、自定义档位、硬件按键改 DPI 后界面自动同步。

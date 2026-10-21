@@ -489,7 +489,7 @@ namespace RazerBatteryTray
             }
             catch { }
         }
-
+
         public static void CleanupDuplicateHyperXDevices()
         {
             try
@@ -625,7 +625,7 @@ namespace RazerBatteryTray
             CleanupDuplicateRazerDevices();
             CleanupDuplicateValkyrieDevices();
             CleanupDuplicateRapooDevices();
-            CleanupDuplicateHyperXDevices();
+            CleanupDuplicateHyperXDevices();
             CleanupDuplicateSteelSeriesDevices();
             CleanupPhantomAppleDevices();
 

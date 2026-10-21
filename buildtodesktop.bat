@@ -3,7 +3,7 @@ chcp 65001 >nul
 setlocal
 
 REM 输出目录：默认桌面（工作区外，避免沙箱 Low 完整性标签导致读不到运行中的应用列表）
-REM 可用第一个参数覆盖，例如: build.bat D:\out
+REM 可用第一个参数覆盖，例如: buildtodesktop.bat D:\out
 set "OUTDIR=%~1"
 if "%OUTDIR%"=="" set "OUTDIR=%USERPROFILE%\Desktop"
 if not exist "%OUTDIR%" mkdir "%OUTDIR%"
@@ -16,7 +16,7 @@ if not exist "%CSC%" (
 )
 
 echo =======================================================
-echo Compiling FerrisPulse (Open-Source Clean Raw Binary)...
+echo Compiling PulseLite (Open-Source Clean Raw Binary)...
 echo Compiler: %CSC%
 echo =======================================================
 
