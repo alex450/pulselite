@@ -222,18 +222,6 @@ namespace RazerBatteryTray
 
         private ToolStripMenuItem lowBatteryAlertMenuItem;
 
-        private ToolStripMenuItem styleCapsuleItem;
-
-        private ToolStripMenuItem styleNumItem;
-
-        private ToolStripMenuItem stylePureNumItem;
-
-        private ToolStripMenuItem int30sMenuItem;
-
-        private ToolStripMenuItem int1mMenuItem;
-
-        private ToolStripMenuItem int5mMenuItem;
-
         private ToolStripMenuItem dpiMenu;
 
         private ToolStripMenuItem rateMenu;
@@ -481,12 +469,6 @@ namespace RazerBatteryTray
 
         private int outOfGameTickCount = 0;
 
-        private bool gameRateNotifyOsd = true;
-
-        private bool gameRateNotifyToast = true;
-
-        private bool gameRateNotifySound = true;
-
         private System.Windows.Forms.Timer gameMonitorTimer;
 
 
@@ -508,16 +490,6 @@ namespace RazerBatteryTray
         private Label lblGameRateTitle;
 
         private ModernSegmentButton[] btnGameRates;
-
-        private Label lblNotifyModeTitle;
-
-        private ModernCheckBox chkNotifyOsd;
-
-        private ModernCheckBox chkNotifyToast;
-
-        private ModernCheckBox chkNotifySound;
-
-
 
         private List<string> monitoredGameProcesses = new List<string> { "cs2.exe", "b1-win64-shipping.exe", "valorant-win64-shipping.exe" };
 
@@ -629,22 +601,6 @@ namespace RazerBatteryTray
 
         private Label lblSettingsTitle;
 
-        private Label lblStyleTitle;
-
-        private ModernSegmentButton btnStyleCapsule;
-
-        private ModernSegmentButton btnStyleNum;
-
-        private ModernSegmentButton btnStylePureNum;
-
-        private Label lblIntervalTitle;
-
-        private ModernSegmentButton btnInt30s;
-
-        private ModernSegmentButton btnInt1m;
-
-        private ModernSegmentButton btnInt5m;
-
         private SubtleDivider divSettings;
 
         private ModernCheckBox chkAutoStart;
@@ -683,8 +639,7 @@ namespace RazerBatteryTray
 
         private bool isUpdatingUI = false;
 
-        private int trayStyle = 0; // 0 = Capsule, 1 = Number, 2 = Pure Number
-
+        private int trayStyle = 1; // 固定使用“醒目数字能量表”
         private float dpiScale = 1.0f;
 
         private MouseBatteryInfo lastInfo = null;
@@ -1459,116 +1414,6 @@ namespace RazerBatteryTray
 
 
 
-        private void SetInterval(int ms, bool showNotification = false)
-
-        {
-
-            userSelectedInterval = ms;
-
-            if (updateTimer != null) updateTimer.Interval = ms;
-
-            SaveConfig();
-
-
-
-            isUpdatingUI = true;
-
-            try
-
-            {
-
-                if (int30sMenuItem != null) int30sMenuItem.Checked = (ms == 30000);
-
-                if (int1mMenuItem != null) int1mMenuItem.Checked = (ms == 60000);
-
-                if (int5mMenuItem != null) int5mMenuItem.Checked = (ms == 300000);
-
-
-
-                if (btnInt30s != null) btnInt30s.Selected = (ms == 30000);
-
-                if (btnInt1m != null) btnInt1m.Selected = (ms == 60000);
-
-                if (btnInt5m != null) btnInt5m.Selected = (ms == 300000);
-
-            }
-
-            finally
-
-            {
-
-                isUpdatingUI = false;
-
-            }
-
-        }
-
-
-
-        private void SetTrayStyle(int style, bool showNotification = false)
-
-        {
-
-            trayStyle = style;
-
-            if (trayStyle < 0 || trayStyle > 2) trayStyle = 0;
-
-            SaveConfig();
-
-
-
-            isUpdatingUI = true;
-
-            try
-
-            {
-
-                if (styleCapsuleItem != null) styleCapsuleItem.Checked = (trayStyle == 0);
-
-                if (styleNumItem != null) styleNumItem.Checked = (trayStyle == 1);
-
-                if (stylePureNumItem != null) stylePureNumItem.Checked = (trayStyle == 2);
-
-
-
-                if (btnStyleCapsule != null) btnStyleCapsule.Selected = (trayStyle == 0);
-
-                if (btnStyleNum != null) btnStyleNum.Selected = (trayStyle == 1);
-
-                if (btnStylePureNum != null) btnStylePureNum.Selected = (trayStyle == 2);
-
-            }
-
-            finally
-
-            {
-
-                isUpdatingUI = false;
-
-            }
-
-
-
-            if (lastInfo != null)
-
-            {
-
-                UpdateTrayIcon(lastInfo.BatteryPercent, lastInfo.IsCharging, lastInfo.IsConnected);
-
-            }
-
-            else
-
-            {
-
-                UpdateTrayIcon(-1, false, false);
-
-            }
-
-        }
-
-
-
         private void UpdateMenuStatusTexts()
 
         {
@@ -1649,40 +1494,12 @@ namespace RazerBatteryTray
 
 
 
-                        var sVal = key.GetValue("TrayIconStyle");
-
-                        if (sVal != null)
-
-                        {
-
-                            trayStyle = (int)sVal;
-
-                            if (trayStyle < 0 || trayStyle > 2) trayStyle = 0;
-
-                        }
 
 
 
 
 
 
-                        var rVal = key.GetValue("RefreshInterval");
-
-                        if (rVal != null)
-
-                        {
-
-                            userSelectedInterval = (int)rVal;
-
-                            if (userSelectedInterval != 30000 && userSelectedInterval != 60000 && userSelectedInterval != 300000)
-
-                            {
-
-                                userSelectedInterval = 60000;
-
-                            }
-
-                        }
 
 
 
@@ -1743,24 +1560,6 @@ namespace RazerBatteryTray
                         var deskRateVal = key.GetValue("DesktopPollingRate");
 
                         if (deskRateVal != null) desktopPollingRate = (int)deskRateVal;
-
-
-
-                        var notifyOsdVal = key.GetValue("GameRateNotifyOsd");
-
-                        if (notifyOsdVal != null) gameRateNotifyOsd = (int)notifyOsdVal == 1;
-
-
-
-                        var notifyToastVal = key.GetValue("GameRateNotifyToast");
-
-                        if (notifyToastVal != null) gameRateNotifyToast = (int)notifyToastVal == 1;
-
-
-
-                        var notifySoundVal = key.GetValue("GameRateNotifySound");
-
-                        if (notifySoundVal != null) gameRateNotifySound = (int)notifySoundVal == 1;
 
 
 
@@ -1906,34 +1705,6 @@ namespace RazerBatteryTray
 
 
 
-                if (styleCapsuleItem != null) styleCapsuleItem.Checked = (trayStyle == 0);
-
-                if (styleNumItem != null) styleNumItem.Checked = (trayStyle == 1);
-
-                if (stylePureNumItem != null) stylePureNumItem.Checked = (trayStyle == 2);
-
-                if (btnStyleCapsule != null) btnStyleCapsule.Selected = (trayStyle == 0);
-
-                if (btnStyleNum != null) btnStyleNum.Selected = (trayStyle == 1);
-
-                if (btnStylePureNum != null) btnStylePureNum.Selected = (trayStyle == 2);
-
-
-
-                if (int30sMenuItem != null) int30sMenuItem.Checked = (userSelectedInterval == 30000);
-
-                if (int1mMenuItem != null) int1mMenuItem.Checked = (userSelectedInterval == 60000);
-
-                if (int5mMenuItem != null) int5mMenuItem.Checked = (userSelectedInterval == 300000);
-
-                if (btnInt30s != null) btnInt30s.Selected = (userSelectedInterval == 30000);
-
-                if (btnInt1m != null) btnInt1m.Selected = (userSelectedInterval == 60000);
-
-                if (btnInt5m != null) btnInt5m.Selected = (userSelectedInterval == 300000);
-
-
-
                 if (chkAutoGameRate != null) chkAutoGameRate.Checked = autoGameRateEnabled;
 
                 if (autoGameRateToggleItem != null) autoGameRateToggleItem.Checked = autoGameRateEnabled;
@@ -1941,12 +1712,6 @@ namespace RazerBatteryTray
                 if (chkAutoGameDpi != null) chkAutoGameDpi.Checked = autoGameDpiEnabled;
 
                 if (autoGameDpiToggleItem != null) autoGameDpiToggleItem.Checked = autoGameDpiEnabled;
-
-                if (chkNotifyOsd != null) chkNotifyOsd.Checked = gameRateNotifyOsd;
-
-                if (chkNotifyToast != null) chkNotifyToast.Checked = gameRateNotifyToast;
-
-                if (chkNotifySound != null) chkNotifySound.Checked = gameRateNotifySound;
 
                 UpdateGameRateButtonSelection(gamePollingRate);
 
@@ -1996,10 +1761,6 @@ namespace RazerBatteryTray
 
                         key.SetValue("AutoStartShowUI", autoStartShowMainWindow ? 1 : 0);
 
-                        key.SetValue("TrayIconStyle", trayStyle);
-
-                        key.SetValue("RefreshInterval", userSelectedInterval);
-
                         key.SetValue("AutoGameOptEnabled", (autoGameRateEnabled || autoGameDpiEnabled) ? 1 : 0);
 
                         key.SetValue("AutoGameRateEnabled", autoGameRateEnabled ? 1 : 0);
@@ -2011,12 +1772,6 @@ namespace RazerBatteryTray
                         key.SetValue("GameTargetDpiStage", gameDpiStage);
 
                         key.SetValue("DesktopPollingRate", desktopPollingRate);
-
-                        key.SetValue("GameRateNotifyOsd", gameRateNotifyOsd ? 1 : 0);
-
-                        key.SetValue("GameRateNotifyToast", gameRateNotifyToast ? 1 : 0);
-
-                        key.SetValue("GameRateNotifySound", gameRateNotifySound ? 1 : 0);
 
                         if (monitoredGameProcesses != null)
 

@@ -1039,27 +1039,6 @@ namespace RazerBatteryTray
                     UpdateStatusDisplay();
                     UpdatePollingRateDisplayStates();
 
-                    if (gameRateNotifyToast)
-                    {
-                        if (isEntering)
-                        {
-                            SafeShowBalloonTip(3000, "FerrisPulse · 电竞加速已激活",
-                                string.Format("检测到电竞游戏运行，回报率提升至 {0} Hz，DPI 切换至第 {1} 档 ({2} DPI)", targetHz, targetStage, targetDpi),
-                                ToolTipIcon.Info);
-                        }
-                        else
-                        {
-                            SafeShowBalloonTip(3000, "FerrisPulse · 常规桌面状态",
-                                string.Format("已切回桌面，回报率恢复至 {0} Hz，DPI 恢复至第 {1} 档 ({2} DPI)", targetHz, targetStage, targetDpi),
-                                ToolTipIcon.Info);
-                        }
-                    }
-
-                    if (gameRateNotifySound)
-                    {
-                        if (isEntering) PlayAscendingChime();
-                        else PlayDescendingChime();
-                    }
                 }));
             }) { IsBackground = true }.Start();
         }
@@ -1093,27 +1072,6 @@ namespace RazerBatteryTray
                         UpdateStatusDisplay();
                         UpdatePollingRateDisplayStates();
 
-                        if (gameRateNotifyToast)
-                        {
-                            if (autoGameDpiEnabled)
-                            {
-                                int gameDpiVal = (dpiStageValues != null && gameDpiStage - 1 < dpiStageValues.Length) ? dpiStageValues[gameDpiStage - 1] : 800;
-                                SafeShowBalloonTip(3000, "FerrisPulse · 电竞加速已激活",
-                                    string.Format("检测到电竞游戏运行，回报率提升至 {0} Hz，DPI 切换至第 {1} 档 ({2} DPI)", targetHz, gameDpiStage, gameDpiVal),
-                                    ToolTipIcon.Info);
-                            }
-                            else
-                            {
-                                SafeShowBalloonTip(3000, "FerrisPulse · 电竞回报率",
-                                    string.Format("检测到电竞游戏运行，已自动将鼠标回报率提升至 {0} Hz", targetHz),
-                                    ToolTipIcon.Info);
-                            }
-                        }
-
-                        if (gameRateNotifySound)
-                        {
-                            PlayAscendingChime();
-                        }
                     }));
                 }
             }) { IsBackground = true }.Start();
@@ -1148,26 +1106,6 @@ namespace RazerBatteryTray
                         UpdateStatusDisplay();
                         UpdatePollingRateDisplayStates();
 
-                        if (gameRateNotifyToast)
-                        {
-                            if (autoGameDpiEnabled && curDev.DpiStage > 0)
-                            {
-                                SafeShowBalloonTip(3000, "FerrisPulse · 常规桌面",
-                                    string.Format("已切回桌面，回报率恢复至 {0} Hz，DPI 恢复至第 {1} 档 ({2} DPI)", targetHz, curDev.DpiStage, curDev.Dpi),
-                                    ToolTipIcon.Info);
-                            }
-                            else
-                            {
-                                SafeShowBalloonTip(3000, "FerrisPulse · 常规回报率",
-                                    string.Format("已切回桌面，鼠标回报率已恢复至 {0} Hz 节能状态", targetHz),
-                                    ToolTipIcon.Info);
-                            }
-                        }
-
-                        if (gameRateNotifySound)
-                        {
-                            PlayDescendingChime();
-                        }
                     }));
                 }
             }) { IsBackground = true }.Start();
@@ -1239,17 +1177,6 @@ namespace RazerBatteryTray
 
                         if (!autoGameRateEnabled)
                         {
-                            if (gameRateNotifyToast)
-                            {
-                                SafeShowBalloonTip(3000, "FerrisPulse · 电竞 DPI",
-                                    string.Format("检测到电竞游戏运行，已自动将鼠标 DPI 切换至第 {0} 档 ({1} DPI)", targetStage, targetDpi),
-                                    ToolTipIcon.Info);
-                            }
-
-                            if (gameRateNotifySound)
-                            {
-                                PlayAscendingChime();
-                            }
                         }
                     }));
                 }
@@ -1318,162 +1245,13 @@ namespace RazerBatteryTray
 
                         if (!autoGameRateEnabled)
                         {
-                            if (gameRateNotifyToast)
-                            {
-                                SafeShowBalloonTip(3000, "FerrisPulse · 常规 DPI",
-                                    string.Format("已切回桌面，鼠标 DPI 已恢复至第 {0} 档 ({1} DPI) 办公状态", prevStage, targetDpi),
-                                    ToolTipIcon.Info);
-                            }
-
-                            if (gameRateNotifySound)
-                            {
-                                PlayDescendingChime();
-                            }
                         }
                     }));
                 }
             }) { IsBackground = true }.Start();
         }
 
-        private static SoundPlayer ascendingPlayer = null;
-        private static SoundPlayer descendingPlayer = null;
         private static readonly object chimeSyncLock = new object();
-
-        private static byte[] GenerateBellChimeWav(double[] freqs, double[] durations)
-        {
-            try
-            {
-                int sampleRate = 44100;
-                int totalSamples = 0;
-                for (int i = 0; i < durations.Length; i++) totalSamples += (int)(sampleRate * durations[i]);
-                int silenceSamples = (int)(sampleRate * 0.15); // 150ms 尾部静音缓冲，彻底根除音频驱动提前截断
-                totalSamples += silenceSamples;
-                int dataChunkSize = totalSamples * 2;
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (BinaryWriter bw = new BinaryWriter(ms))
-                    {
-                        bw.Write(new char[] { 'R', 'I', 'F', 'F' });
-                        bw.Write(36 + dataChunkSize);
-                        bw.Write(new char[] { 'W', 'A', 'V', 'E' });
-                        bw.Write(new char[] { 'f', 'm', 't', ' ' });
-                        bw.Write(16);
-                        bw.Write((short)1); // PCM
-                        bw.Write((short)1); // Mono
-                        bw.Write(sampleRate);
-                        bw.Write(sampleRate * 2);
-                        bw.Write((short)2);
-                        bw.Write((short)16);
-                        bw.Write(new char[] { 'd', 'a', 't', 'a' });
-                        bw.Write(dataChunkSize);
-
-                        for (int n = 0; n < freqs.Length; n++)
-                        {
-                            double f = freqs[n];
-                            int nSamples = (int)(sampleRate * durations[n]);
-                            double decayRate = (n == 0) ? 12.0 : 6.5;
-                            for (int i = 0; i < nSamples; i++)
-                            {
-                                double t = (double)i / sampleRate;
-                                double env = (t < 0.005) ? (t / 0.005) : Math.Exp(-(t - 0.005) * decayRate);
-                                double remTime = durations[n] - t;
-                                if (remTime < 0.025)
-                                {
-                                    env *= (remTime / 0.025);
-                                }
-                                double s = (Math.Sin(2.0 * Math.PI * f * t) * 0.75 +
-                                            Math.Sin(4.0 * Math.PI * f * t) * 0.20 +
-                                            Math.Sin(6.0 * Math.PI * f * t) * 0.05) * env;
-                                short sample = (short)(s * 2500);
-                                bw.Write(sample);
-                            }
-                        }
-
-                        // 填充 150ms 纯零静音缓冲
-                        for (int i = 0; i < silenceSamples; i++)
-                        {
-                            bw.Write((short)0);
-                        }
-
-                        bw.Flush();
-                        return ms.ToArray();
-                    }
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static void PlayAscendingChime()
-        {
-            ThreadPool.QueueUserWorkItem(_ => {
-                try
-                {
-                    lock (chimeSyncLock)
-                    {
-                        if (ascendingPlayer == null)
-                        {
-                            byte[] wav = GenerateBellChimeWav(new double[] { 784.0, 1046.5 }, new double[] { 0.10, 0.26 });
-                            if (wav != null)
-                            {
-                                var ms = new MemoryStream(wav);
-                                ascendingPlayer = new SoundPlayer(ms);
-                                ascendingPlayer.Load();
-                            }
-                        }
-                        if (ascendingPlayer != null)
-                        {
-                            ascendingPlayer.PlaySync();
-                        }
-                        else
-                        {
-                            System.Media.SystemSounds.Asterisk.Play();
-                        }
-                    }
-                }
-                catch
-                {
-                    try { System.Media.SystemSounds.Asterisk.Play(); } catch { }
-                }
-            });
-        }
-
-        private static void PlayDescendingChime()
-        {
-            ThreadPool.QueueUserWorkItem(_ => {
-                try
-                {
-                    lock (chimeSyncLock)
-                    {
-                        if (descendingPlayer == null)
-                        {
-                            byte[] wav = GenerateBellChimeWav(new double[] { 1046.5, 784.0 }, new double[] { 0.10, 0.26 });
-                            if (wav != null)
-                            {
-                                var ms = new MemoryStream(wav);
-                                descendingPlayer = new SoundPlayer(ms);
-                                descendingPlayer.Load();
-                            }
-                        }
-                        if (descendingPlayer != null)
-                        {
-                            descendingPlayer.PlaySync();
-                        }
-                        else
-                        {
-                            System.Media.SystemSounds.Asterisk.Play();
-                        }
-                    }
-                }
-                catch
-                {
-                    try { System.Media.SystemSounds.Asterisk.Play(); } catch { }
-                }
-            });
-        }
 
         private void SetAsPrimaryDevice(string deviceId)
         {
@@ -1792,10 +1570,6 @@ namespace RazerBatteryTray
                     if (btnGameDpiStages[i] != null) btnGameDpiStages[i].Visible = false;
                 }
             }
-            if (lblNotifyModeTitle != null) lblNotifyModeTitle.Visible = false;
-            if (chkNotifyOsd != null) chkNotifyOsd.Visible = false;
-            if (chkNotifyToast != null) chkNotifyToast.Visible = false;
-            if (chkNotifySound != null) chkNotifySound.Visible = false;
             if (autoGameRateMenu != null) autoGameRateMenu.Visible = false;
         }
 
@@ -2531,7 +2305,7 @@ namespace RazerBatteryTray
 
                 bool supportsAutoGameRate = (isRazer || isLogitechMouse || isRapooMouse || isValkyrieMouse);
                 bool isOptExpanded = (autoGameRateEnabled || autoGameDpiEnabled);
-                int targetPerfH = (!supportsAutoGameRate || !isOptExpanded) ? (int)(148 * dpiScale) : (int)(255 * dpiScale);
+                int targetPerfH = (!supportsAutoGameRate || !isOptExpanded) ? (int)(148 * dpiScale) : (int)(218 * dpiScale);
                 AdjustPerformanceCardHeight(targetPerfH);
 
                 bool showExpanded = supportsAutoGameRate && isOptExpanded;
@@ -2548,9 +2322,6 @@ namespace RazerBatteryTray
                 {
                     chkAutoGameRate.Checked = autoGameRateEnabled;
                 }
-                if (chkNotifyOsd != null) chkNotifyOsd.Checked = gameRateNotifyOsd;
-                if (chkNotifyToast != null) chkNotifyToast.Checked = gameRateNotifyToast;
-                if (chkNotifySound != null) chkNotifySound.Checked = gameRateNotifySound;
                 if (autoGameRateMenu != null) autoGameRateMenu.Visible = supportsAutoGameRate;
                 if (info.DpiStages != null && info.DpiStages.Length > 0)
                 {

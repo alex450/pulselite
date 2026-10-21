@@ -188,36 +188,15 @@ namespace RazerBatteryTray
             }
             autoGameRateMenu.DropDownItems.Add(gameDpiSub);
 
-            var notifySub = new ToolStripMenuItem("切换提醒方式");
-            ConfigureSubMenuDropDown(notifySub.DropDown);
             var miOsd = new ToolStripMenuItem("游戏 OSD 浮窗", null, (s, e) => {
-                gameRateNotifyOsd = !gameRateNotifyOsd;
-                if (chkNotifyOsd != null) chkNotifyOsd.Checked = gameRateNotifyOsd;
                 SaveConfig();
-                ((ToolStripMenuItem)s).Checked = gameRateNotifyOsd;
             });
-            miOsd.Checked = gameRateNotifyOsd;
-            notifySub.DropDownItems.Add(miOsd);
-
             var miToast = new ToolStripMenuItem("Windows 系统通知", null, (s, e) => {
-                gameRateNotifyToast = !gameRateNotifyToast;
-                if (chkNotifyToast != null) chkNotifyToast.Checked = gameRateNotifyToast;
                 SaveConfig();
-                ((ToolStripMenuItem)s).Checked = gameRateNotifyToast;
             });
-            miToast.Checked = gameRateNotifyToast;
-            notifySub.DropDownItems.Add(miToast);
-
             var miSound = new ToolStripMenuItem("柔和提示音", null, (s, e) => {
-                gameRateNotifySound = !gameRateNotifySound;
-                if (chkNotifySound != null) chkNotifySound.Checked = gameRateNotifySound;
                 SaveConfig();
-                ((ToolStripMenuItem)s).Checked = gameRateNotifySound;
             });
-            miSound.Checked = gameRateNotifySound;
-            notifySub.DropDownItems.Add(miSound);
-
-            autoGameRateMenu.DropDownItems.Add(notifySub);
             contextMenu.Items.Add(autoGameRateMenu);
 
             nuphySleepMenuItem = new ToolStripMenuItem("自动休眠: 已开启");
@@ -306,55 +285,6 @@ namespace RazerBatteryTray
             nuphyTraySep = new ToolStripSeparator();
             nuphyTraySep.Visible = false;
             contextMenu.Items.Add(nuphyTraySep);
-
-            var intervalMenu = new ToolStripMenuItem("自动刷新频率");
-            ConfigureSubMenuDropDown(intervalMenu.DropDown);
-            int30sMenuItem = new ToolStripMenuItem("30 秒", null, (s, e) => {
-                SetInterval(30000, true);
-                int30sMenuItem.Checked = true;
-                int1mMenuItem.Checked = false;
-                int5mMenuItem.Checked = false;
-            });
-            int1mMenuItem = new ToolStripMenuItem("1 分钟", null, (s, e) => {
-                SetInterval(60000, true);
-                int30sMenuItem.Checked = false;
-                int1mMenuItem.Checked = true;
-                int5mMenuItem.Checked = false;
-            });
-            int5mMenuItem = new ToolStripMenuItem("5 分钟", null, (s, e) => {
-                SetInterval(300000, true);
-                int30sMenuItem.Checked = false;
-                int1mMenuItem.Checked = false;
-                int5mMenuItem.Checked = true;
-            });
-            intervalMenu.DropDownItems.AddRange(new ToolStripItem[] { int30sMenuItem, int1mMenuItem, int5mMenuItem });
-            contextMenu.Items.Add(intervalMenu);
-
-            var styleMenu = new ToolStripMenuItem("托盘图标样式");
-            ConfigureSubMenuDropDown(styleMenu.DropDown);
-            styleCapsuleItem = new ToolStripMenuItem("现代胶囊电池", null, (s, e) => {
-                SetTrayStyle(0, true);
-                styleCapsuleItem.Checked = true;
-                styleNumItem.Checked = false;
-                stylePureNumItem.Checked = false;
-            });
-            styleNumItem = new ToolStripMenuItem("醒目数字能量表", null, (s, e) => {
-                SetTrayStyle(1, true);
-                styleCapsuleItem.Checked = false;
-                styleNumItem.Checked = true;
-                stylePureNumItem.Checked = false;
-            });
-            stylePureNumItem = new ToolStripMenuItem("极简纯数字", null, (s, e) => {
-                SetTrayStyle(2, true);
-                styleCapsuleItem.Checked = false;
-                styleNumItem.Checked = false;
-                stylePureNumItem.Checked = true;
-            });
-            styleCapsuleItem.Checked = (trayStyle == 0);
-            styleNumItem.Checked = (trayStyle == 1);
-            stylePureNumItem.Checked = (trayStyle == 2);
-            styleMenu.DropDownItems.AddRange(new ToolStripItem[] { styleCapsuleItem, styleNumItem, stylePureNumItem });
-            contextMenu.Items.Add(styleMenu);
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
