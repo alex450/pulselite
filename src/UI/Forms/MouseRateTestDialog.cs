@@ -43,7 +43,7 @@ namespace RazerBatteryTray
 
         public MouseRateTestDialog(float scale) : base(scale)
         {
-            this.Text = "FerrisPulse · 鼠标微秒级实时回报率 (Polling Rate) 测速台";
+            this.Text = "PulseLite · 鼠标微秒级实时回报率 (Polling Rate) 测速台";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

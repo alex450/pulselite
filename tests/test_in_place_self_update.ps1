@@ -3,7 +3,7 @@
 # 验证内容:
 #   1. UpdateManager.BuildSelfReplaceCommand 伴随命令契约 (无黑框、Wait-Process、Move-Item、Start-Process)
 #   2. MainForm 顶栏关于按钮 btnTopAbout 存在且挂接
-#   3. 托盘右键菜单包含纯净项 "关于 FerrisPulse" 与 "检查更新"，且分类判定为 Category B (收起菜单)
+#   3. 托盘右键菜单包含纯净项 "关于 PulseLite" 与 "检查更新"，且分类判定为 Category B (收起菜单)
 # ============================================================================
 
 $ErrorActionPreference = "Stop"
@@ -11,7 +11,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Get-Item "$scriptDir\..").FullName
 
 # 1. 编译并加载待测程序集
-$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "FerrisPulse_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
+$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "PulseLite_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path $csc)) {
     $csc = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
@@ -39,7 +39,7 @@ try {
         exit 1
     }
 
-    $cmd = $cmdMethod.Invoke($null, @(1234, "C:\App\FerrisPulse.exe", "C:\App\FerrisPulse.exe.update"))
+    $cmd = $cmdMethod.Invoke($null, @(1234, "C:\App\PulseLite.exe", "C:\App\PulseLite.exe.update"))
     if ($cmd -notmatch "Wait-Process -Id 1234") {
         Write-Error "FAIL: Command missing 'Wait-Process -Id 1234'!"
         exit 1
@@ -89,20 +89,20 @@ try {
     foreach ($item in $trayMenu.Items) {
         if (-not [string]::IsNullOrEmpty($item.Text)) {
             $menuTexts.Add($item.Text)
-            if ($item.Text -eq "关于 FerrisPulse") { $itemAbout = $item }
+            if ($item.Text -eq "关于 PulseLite") { $itemAbout = $item }
             if ($item.Text -eq "检查更新") { $itemUpdate = $item }
         }
     }
 
     if ($null -eq $itemAbout) {
-        Write-Error "FAIL: Tray menu missing '关于 FerrisPulse'!"
+        Write-Error "FAIL: Tray menu missing '关于 PulseLite'!"
         exit 1
     }
     if ($null -eq $itemUpdate) {
         Write-Error "FAIL: Tray menu missing '检查更新'!"
         exit 1
     }
-    Write-Host "PASS: Tray menu items '关于 FerrisPulse' and '检查更新' present." -ForegroundColor Green
+    Write-Host "PASS: Tray menu items '关于 PulseLite' and '检查更新' present." -ForegroundColor Green
 
     # 验证分类判定 (应该返回 false，即属于 Category B，点击后关闭托盘菜单)
     $classifyMethod = $mainFormType.GetMethod("ShouldKeepTrayMenuOpen", [System.Reflection.BindingFlags]"Public,NonPublic,Instance")
@@ -113,7 +113,7 @@ try {
 
     $keepAbout = $classifyMethod.Invoke($mainForm, @($itemAbout))
     if ($keepAbout -ne $false) {
-        Write-Error "FAIL: '关于 FerrisPulse' expected Category B (false), got $keepAbout"
+        Write-Error "FAIL: '关于 PulseLite' expected Category B (false), got $keepAbout"
         exit 1
     }
     $keepUpdate = $classifyMethod.Invoke($mainForm, @($itemUpdate))

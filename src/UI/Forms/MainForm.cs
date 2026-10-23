@@ -621,7 +621,7 @@ namespace RazerBatteryTray
 
 
 
-        private const string AppName = "FerrisPulse";
+        private const string AppName = "PulseLite";
 
         private static readonly string[] LegacyAppNames = new string[] { "RazerBatteryTray", "RazerBattery", "RazerTray" };
 
@@ -629,7 +629,7 @@ namespace RazerBatteryTray
 
         private const string StartupApprovedRunKey = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
 
-        private const string ConfigRegistryKey = @"Software\FerrisPulse";
+        private const string ConfigRegistryKey = @"Software\PulseLite";
 
 
 
@@ -863,7 +863,7 @@ namespace RazerBatteryTray
 
                 wakeupListenerThread.IsBackground = true;
 
-                wakeupListenerThread.Name = "FerrisPulseWakeupListener";
+                wakeupListenerThread.Name = "PulseLiteWakeupListener";
 
                 wakeupListenerThread.Start();
 

@@ -1,12 +1,12 @@
 ﻿# tests\test_xy_dpi_integration.ps1
 # 验证雷蛇与瓦尔基里 X/Y 轴独立灵敏度与比例调节契约与报文生成
 
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
 if (-not (Test-Path $asmPath)) {
-    $asmPath = "FerrisPulse.exe"
+    $asmPath = "PulseLite.exe"
 }
 if (-not (Test-Path $asmPath)) {
-    Write-Host "RED: FerrisPulse.exe not found for testing!" -ForegroundColor Red
+    Write-Host "RED: PulseLite.exe not found for testing!" -ForegroundColor Red
     exit 1
 }
 

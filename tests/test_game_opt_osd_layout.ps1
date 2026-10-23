@@ -7,9 +7,9 @@
 
 $ErrorActionPreference = "Stop"
 
-$exePath = "FerrisPulse.exe"
+$exePath = "PulseLite.exe"
 if (-not (Test-Path $exePath)) {
-    Write-Host "FAIL: FerrisPulse.exe not found." -ForegroundColor Red
+    Write-Host "FAIL: PulseLite.exe not found." -ForegroundColor Red
     exit 1
 }
 

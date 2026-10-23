@@ -20,7 +20,7 @@ if (-not (Test-Path $csc)) {
 }
 
 $tempSrc = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "LiveTestRunner_" + [System.Guid]::NewGuid().ToString("N") + ".cs")
-$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "FerrisPulse_LiveGitee_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
+$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "PulseLite_LiveGitee_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
 
 $runnerCode = @'
 using System;

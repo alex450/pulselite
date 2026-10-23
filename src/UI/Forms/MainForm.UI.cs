@@ -125,7 +125,7 @@ namespace RazerBatteryTray
             toolTipTop = new ToolTip();
             toolTipTop.SetToolTip(btnTopPriority, "设备优先级管理 (拖拽排序)");
             toolTipTop.SetToolTip(btnTopAddDevice, "手动添加新外设向导 (耳机/手柄/键鼠)");
-            toolTipTop.SetToolTip(btnTopAbout, "关于 FerrisPulse & 赞赏支持");
+            toolTipTop.SetToolTip(btnTopAbout, "关于 PulseLite & 赞赏支持");
 
             // ================= CARD 1: BATTERY & DEVICE STATUS =================
             int card1Y = (int)(12 * dpiScale) + barH + (int)(10 * dpiScale);
@@ -2179,7 +2179,7 @@ namespace RazerBatteryTray
                     {
                         if (trayIcon != null)
                         {
-                            try { trayIcon.ShowBalloonTip(3000, "已是最新版本", "当前 FerrisPulse 已是最新版本 (" + curVer + ")！", ToolTipIcon.Info); } catch { }
+                            try { trayIcon.ShowBalloonTip(3000, "已是最新版本", "当前 PulseLite 已是最新版本 (" + curVer + ")！", ToolTipIcon.Info); } catch { }
                         }
                     }
                 });

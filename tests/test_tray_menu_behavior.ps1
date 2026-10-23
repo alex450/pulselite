@@ -2,8 +2,8 @@
 # 验证托盘菜单纯净化（零图标/零Emoji/零助记符快捷键）与双轨生命周期（就地设置保活 vs 路由自动关闭）
 $ErrorActionPreference = "Stop"
 
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { $asmPath = "FerrisPulse.exe" }
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
+if (-not (Test-Path $asmPath)) { $asmPath = "PulseLite.exe" }
 $fullPath = (Resolve-Path $asmPath).Path
 $bytes = [System.IO.File]::ReadAllBytes($fullPath)
 $asm = [System.Reflection.Assembly]::Load($bytes)

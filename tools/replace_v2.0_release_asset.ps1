@@ -26,10 +26,10 @@ $ghToken = [Environment]::GetEnvironmentVariable("GITHUB_TOKEN", "Process")
 $ghRepo = [Environment]::GetEnvironmentVariable("GITHUB_REPO", "Process")
 
 if (-not $giteeRepo) { $giteeRepo = "Ferris-echo/ferris-pulse" }
-if (-not $ghRepo) { $ghRepo = "Ferris-echo/FerrisPulse" }
+if (-not $ghRepo) { $ghRepo = "Ferris-echo/PulseLite" }
 
-$zipPath = Join-Path $rootDir "FerrisPulse_v2.0_Portable.zip"
-$exePath = Join-Path $rootDir "FerrisPulse.exe"
+$zipPath = Join-Path $rootDir "PulseLite_v2.0_Portable.zip"
+$exePath = Join-Path $rootDir "PulseLite.exe"
 
 if (-not (Test-Path $zipPath) -or -not (Test-Path $exePath)) {
     Write-Error "FAIL: $zipPath or $exePath missing!"
@@ -42,7 +42,7 @@ Write-Host "==========================================================" -Foregro
 
 # 2. 定位 Gitee Release v2.0.0
 $releasesUrl = "https://gitee.com/api/v5/repos/$giteeRepo/releases?access_token=$giteeToken"
-$allRel = Invoke-RestMethod -Uri $releasesUrl -UserAgent "FerrisPulse-Release"
+$allRel = Invoke-RestMethod -Uri $releasesUrl -UserAgent "PulseLite-Release"
 $v2Rel = $null
 foreach ($r in $allRel) {
     if ($r.tag_name -eq "v2.0.0") {
@@ -59,12 +59,12 @@ if ($null -eq $v2Rel) {
 Write-Host "找到 Gitee v2.0.0 Release (ID: $($v2Rel.id))" -ForegroundColor Green
 
 # 3. 删除 Gitee 历史资产
-$giteeRelInfo = Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$($v2Rel.id)?access_token=$giteeToken" -UserAgent "FerrisPulse-Release"
+$giteeRelInfo = Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$($v2Rel.id)?access_token=$giteeToken" -UserAgent "PulseLite-Release"
 foreach ($ga in $giteeRelInfo.assets) {
-    if ($ga.name -eq "FerrisPulse_v2.0_Portable.zip" -or $ga.name -eq "FerrisPulse.exe") {
+    if ($ga.name -eq "PulseLite_v2.0_Portable.zip" -or $ga.name -eq "PulseLite.exe") {
         Write-Host "  -> [Gitee] 删除旧版本资产: $($ga.name) (ID: $($ga.id))..." -ForegroundColor Yellow
         try {
-            Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$($v2Rel.id)/attach_files/$($ga.id)?access_token=$giteeToken" -Method Delete -UserAgent "FerrisPulse-Release" | Out-Null
+            Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$($v2Rel.id)/attach_files/$($ga.id)?access_token=$giteeToken" -Method Delete -UserAgent "PulseLite-Release" | Out-Null
         } catch {
             Write-Warning "删除资产 $($ga.name) 异常: $_"
         }
@@ -74,10 +74,10 @@ foreach ($ga in $giteeRelInfo.assets) {
 Start-Sleep -Seconds 1
 
 # 4. 上传全新纯净无混淆资产到 Gitee
-Write-Host "  -> [Gitee] 上传全新纯净版 FerrisPulse_v2.0_Portable.zip..." -ForegroundColor Cyan
+Write-Host "  -> [Gitee] 上传全新纯净版 PulseLite_v2.0_Portable.zip..." -ForegroundColor Cyan
 & curl.exe -s -X POST "https://gitee.com/api/v5/repos/$giteeRepo/releases/$($v2Rel.id)/attach_files" -F "access_token=$giteeToken" -F "file=@$zipPath" | Out-Null
 
-Write-Host "  -> [Gitee] 上传全新纯净版 FerrisPulse.exe..." -ForegroundColor Cyan
+Write-Host "  -> [Gitee] 上传全新纯净版 PulseLite.exe..." -ForegroundColor Cyan
 & curl.exe -s -X POST "https://gitee.com/api/v5/repos/$giteeRepo/releases/$($v2Rel.id)/attach_files" -F "access_token=$giteeToken" -F "file=@$exePath" | Out-Null
 
 Write-Host "  -> [Gitee] 资产上传完成！" -ForegroundColor Green
@@ -90,7 +90,7 @@ if ($ghToken) {
     $ghHeaders = @{
         "Authorization" = "Bearer $ghToken"
         "Accept" = "application/vnd.github.v3+json"
-        "User-Agent" = "FerrisPulse-Release"
+        "User-Agent" = "PulseLite-Release"
     }
 
     try {
@@ -99,7 +99,7 @@ if ($ghToken) {
             Write-Host "找到 GitHub v2.0.0 Release (ID: $($ghRel.id))" -ForegroundColor Green
             $ghAssets = Invoke-RestMethod -Uri "https://api.github.com/repos/$ghRepo/releases/$($ghRel.id)/assets" -Headers $ghHeaders
             foreach ($ea in $ghAssets) {
-                if ($ea.name -eq "FerrisPulse.exe" -or $ea.name -eq "FerrisPulse_v2.0_Portable.zip" -or $ea.name -eq "FerrisPulse_v2.0.0_Portable.zip") {
+                if ($ea.name -eq "PulseLite.exe" -or $ea.name -eq "PulseLite_v2.0_Portable.zip" -or $ea.name -eq "PulseLite_v2.0.0_Portable.zip") {
                     Write-Host "  -> [GitHub] 删除旧版本资产: $($ea.name) (ID: $($ea.id))..." -ForegroundColor Yellow
                     Invoke-RestMethod -Uri "https://api.github.com/repos/$ghRepo/releases/assets/$($ea.id)" -Method Delete -Headers $ghHeaders | Out-Null
                 }
@@ -107,11 +107,11 @@ if ($ghToken) {
 
             Start-Sleep -Seconds 1
 
-            Write-Host "  -> [GitHub] 上传 FerrisPulse_v2.0_Portable.zip..." -ForegroundColor Cyan
-            & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$($ghRel.id)/assets?name=FerrisPulse_v2.0_Portable.zip" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$zipPath" | Out-Null
+            Write-Host "  -> [GitHub] 上传 PulseLite_v2.0_Portable.zip..." -ForegroundColor Cyan
+            & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$($ghRel.id)/assets?name=PulseLite_v2.0_Portable.zip" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$zipPath" | Out-Null
 
-            Write-Host "  -> [GitHub] 上传 FerrisPulse.exe..." -ForegroundColor Cyan
-            & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$($ghRel.id)/assets?name=FerrisPulse.exe" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$exePath" | Out-Null
+            Write-Host "  -> [GitHub] 上传 PulseLite.exe..." -ForegroundColor Cyan
+            & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$($ghRel.id)/assets?name=PulseLite.exe" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$exePath" | Out-Null
 
             Write-Host "  -> [GitHub] 资产上传完成！" -ForegroundColor Green
         }
@@ -122,7 +122,7 @@ if ($ghToken) {
 
 # 6. 验证 Gitee 直链可下载性
 Write-Host "`n验证 Gitee 目标链接是否就绪..." -ForegroundColor Cyan
-$targetUrl = "https://gitee.com/$giteeRepo/releases/download/v2.0.0/FerrisPulse_v2.0_Portable.zip"
+$targetUrl = "https://gitee.com/$giteeRepo/releases/download/v2.0.0/PulseLite_v2.0_Portable.zip"
 $verifyCode = & curl.exe -s -o /dev/null -w "%{http_code}" -L "$targetUrl"
 Write-Host "HTTP 响应码: $verifyCode (预期 200)" -ForegroundColor Green
 

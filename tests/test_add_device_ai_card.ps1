@@ -6,9 +6,9 @@
 
 $ErrorActionPreference = "Stop"
 
-$exePath = "FerrisPulse.exe"
+$exePath = "PulseLite.exe"
 if (-not (Test-Path $exePath)) {
-    Write-Host "FAIL: FerrisPulse.exe not found." -ForegroundColor Red
+    Write-Host "FAIL: PulseLite.exe not found." -ForegroundColor Red
     exit 1
 }
 
@@ -41,7 +41,7 @@ if (-not $prompt.Contains("AGENT_HANDBOOK.md") -or -not $prompt.Contains("AGENT_
 }
 Write-Host "PASS: 提示词已强制前置 AGENT_HANDBOOK.md 与 AGENT_RULES.md 经验飞轮" -ForegroundColor Green
 
-if (-not $prompt.Contains("https://github.com/Ferris-echo/FerrisPulse.git") -or -not $prompt.Contains("https://gitee.com/Ferris-echo/ferris-pulse.git")) {
+if (-not $prompt.Contains("https://github.com/Ferris-echo/PulseLite.git") -or -not $prompt.Contains("https://gitee.com/Ferris-echo/ferris-pulse.git")) {
     Write-Host "FAIL: 提示词中的仓库地址非官方 Ferris-echo 仓库！" -ForegroundColor Red
     exit 1
 }

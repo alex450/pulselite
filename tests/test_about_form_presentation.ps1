@@ -11,7 +11,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Get-Item "$scriptDir\..").FullName
 
 # 1. 编译并加载待测程序集
-$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "FerrisPulse_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
+$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "PulseLite_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path $csc)) {
     $csc = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
@@ -74,11 +74,11 @@ try {
     Write-Host "PASS: Author attribution 'Ferris-echo' found." -ForegroundColor Green
 
     # 验证软件名与版本标识
-    if ($joinedTexts -notmatch "FerrisPulse") {
-        Write-Error "FAIL: AboutForm missing brand name 'FerrisPulse'!"
+    if ($joinedTexts -notmatch "PulseLite") {
+        Write-Error "FAIL: AboutForm missing brand name 'PulseLite'!"
         exit 1
     }
-    Write-Host "PASS: Brand name 'FerrisPulse' found." -ForegroundColor Green
+    Write-Host "PASS: Brand name 'PulseLite' found." -ForegroundColor Green
 
     # 验证“旗舰版”已移除，保持极简版本号
     if ($joinedTexts -match "旗舰版") {

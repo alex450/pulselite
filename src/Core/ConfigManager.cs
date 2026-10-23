@@ -2,7 +2,7 @@
 // 模块名称: ConfigManager.cs
 // 所属区域: Core (核心管理层)
 // 核心职责:
-//   集中管理用户配置与状态在 Windows 注册表 (HKCU\Software\FerrisPulse) 的持久化存取
+//   集中管理用户配置与状态在 Windows 注册表 (HKCU\Software\PulseLite) 的持久化存取
 // 依赖关系: 无外部依赖
 //
 // ⚠️ AI 维护准则 (AI MAINTENANCE DIRECTIVE - DO NOT REMOVE) ⚠️:
@@ -19,7 +19,8 @@ namespace RazerBatteryTray
 {
     public static class ConfigManager
     {
-        public const string ConfigRegistryKey = @"Software\FerrisPulse";
+        public const string ConfigRegistryKey = @"Software\PulseLite";
+        public const string LegacyBrandConfigKey = @"Software\FerrisPulse";
         public const string LegacyConfigKey = @"Software\RazerBatteryTray";
         public const string DesktopShortcutInitialized = "DesktopShortcutInitialized";
         public const string AutoCheckUpdate = "AutoCheckUpdate";
@@ -30,6 +31,14 @@ namespace RazerBatteryTray
             try
             {
                 using (var key = Registry.CurrentUser.OpenSubKey(ConfigRegistryKey, false))
+                {
+                    if (key != null)
+                    {
+                        var val = key.GetValue(name);
+                        if (val != null) return Convert.ToInt32(val);
+                    }
+                }
+                using (var key = Registry.CurrentUser.OpenSubKey(LegacyBrandConfigKey, false))
                 {
                     if (key != null)
                     {
@@ -61,6 +70,14 @@ namespace RazerBatteryTray
             try
             {
                 using (var key = Registry.CurrentUser.OpenSubKey(ConfigRegistryKey, false))
+                {
+                    if (key != null)
+                    {
+                        var val = key.GetValue(name);
+                        if (val != null) return val.ToString();
+                    }
+                }
+                using (var key = Registry.CurrentUser.OpenSubKey(LegacyBrandConfigKey, false))
                 {
                     if (key != null)
                     {

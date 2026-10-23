@@ -21,8 +21,8 @@ Write-Host "==========================================================" -Foregro
 Write-Host " [测试 1/3] 程序集加载与方法可用性" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-$asmPath = Join-Path $ProjectDir "FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { Fail "FerrisPulse.exe 不存在，请先执行 build.bat" }
+$asmPath = Join-Path $ProjectDir "PulseLite.exe"
+if (-not (Test-Path $asmPath)) { Fail "PulseLite.exe 不存在，请先执行 build.bat" }
 $asm = [System.Reflection.Assembly]::Load([System.IO.File]::ReadAllBytes((Resolve-Path $asmPath).Path))
 $t = $asm.GetType("RazerBatteryTray.RazerDeviceHelper")
 if ($null -eq $t) { Fail "未找到 RazerBatteryTray.RazerDeviceHelper" }

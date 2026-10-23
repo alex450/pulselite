@@ -139,7 +139,7 @@ namespace RazerBatteryTray
 
         private void InitializeUI()
         {
-            this.Text = "FerrisPulse · DPI 档位与板载设置";
+            this.Text = "PulseLite · DPI 档位与板载设置";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.StartPosition = FormStartPosition.CenterParent;
             this.MaximizeBox = false;

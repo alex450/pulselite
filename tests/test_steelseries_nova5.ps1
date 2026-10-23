@@ -63,7 +63,7 @@ Write-Host " [测试 3/5] SteelSeries 硬件标识、型号与设备分类校验
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 # 全内存反射加载，严禁 Add-Type / LoadFrom 产生文件句柄锁死
-$binPath = "$ProjectDir\FerrisPulse.exe"
+$binPath = "$ProjectDir\PulseLite.exe"
 if (-not (Test-Path $binPath)) {
     Write-Host "编译二进制以供测试反射..." -ForegroundColor Yellow
     cmd /c "$ProjectDir\build.bat" | Out-Null

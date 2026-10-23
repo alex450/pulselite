@@ -8,7 +8,7 @@ if not exist "%CSC%" (
 )
 
 echo =======================================================
-echo Compiling FerrisPulse (Open-Source Clean Raw Binary)...
+echo Compiling PulseLite (Open-Source Clean Raw Binary)...
 echo Compiler: %CSC%
 echo =======================================================
 

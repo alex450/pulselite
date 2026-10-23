@@ -930,9 +930,9 @@ namespace RazerBatteryTray
 
         public static string GetAiAdaptationPrompt()
         {
-            return @"# 任务：为开源软件「FerrisPulse (灵脉)」专属适配我正在使用的硬件外设
+            return @"# 任务：为开源软件「PulseLite (灵脉)」专属适配我正在使用的硬件外设
 
-你好！我现在使用的外设设备暂未被「FerrisPulse (灵脉)」原生识别。请你作为专业的系统级硬件逆向与 C# 智能体工程师，帮助我完成当前电脑上连接设备的电量监控与性能适配。
+你好！我现在使用的外设设备暂未被「PulseLite (灵脉)」原生识别。请你作为专业的系统级硬件逆向与 C# 智能体工程师，帮助我完成当前电脑上连接设备的电量监控与性能适配。
 
 ## ⚠️ 第 1 步必读：继承工程经验（杜绝踩坑）
 在动工编写任何代码之前，必须首先通读工程根目录下的 `docs/AGENT_HANDBOOK.md` 与 `AGENT_RULES.md`！
@@ -940,7 +940,7 @@ namespace RazerBatteryTray
 
 ## 2. 获取工程源码
 请使用 git 从以下官方仓库克隆最新完整源码：
-- GitHub (首选): https://github.com/Ferris-echo/FerrisPulse.git
+- GitHub (首选): https://github.com/Ferris-echo/PulseLite.git
 - Gitee (镜像): https://gitee.com/Ferris-echo/ferris-pulse.git
 
 ## 3. 探测我当前物理连接的硬件设备
@@ -964,11 +964,11 @@ namespace RazerBatteryTray
    - 适配完成后，设备分类、电量与支持的特性无缝对接到主界面 UI（MainForm）与 OSD。
 
 ## 6. 本地编译与回归测试验证
-在源码根目录下执行 cmd.exe /c ""build.bat"" 验证编译是否成功生成 FerrisPulse.exe，并运行相关自动化测试确保没有回归问题。
+在源码根目录下执行 cmd.exe /c ""build.bat"" 验证编译是否成功生成 PulseLite.exe，并运行相关自动化测试确保没有回归问题。
 
 ## 7. 引导我向作者贡献代码（开源知识飞轮）
 适配成功并完成实测后，请为我整理一份简洁的贡献摘要（包含修改了哪些文件、适配了什么型号、设备 VID/PID 与报文细节），并引导我通过以下途径之一分享给作者合并入官方主线：
-- 方式 A：提交 GitHub Pull Request / Issue (https://github.com/Ferris-echo/FerrisPulse)
+- 方式 A：提交 GitHub Pull Request / Issue (https://github.com/Ferris-echo/PulseLite)
 - 方式 B：提交 Gitee Pull Request / Issue (https://gitee.com/Ferris-echo/ferris-pulse)
 - 方式 C：将代码变更或 patch 文件通过邮件/文本形式共享给作者
 作者会将你的适配成果永久纳入官方支持库，并在更新日志（CHANGELOG）与关于页面中为你署名致谢！";

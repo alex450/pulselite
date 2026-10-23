@@ -87,7 +87,7 @@ namespace RazerBatteryTray
 
         public KeyRolloverSpeedForm(float scale) : base(scale)
         {
-            this.Text = "FerrisPulse · 机械键盘全键无冲 (NKRO) 测速仪 [独占抢占模式]";
+            this.Text = "PulseLite · 机械键盘全键无冲 (NKRO) 测速仪 [独占抢占模式]";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

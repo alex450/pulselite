@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "https://raw.githubusercontent.com/Ferris-echo/FerrisPulse/main/schemas/fdas-v1.0.json",
+  "$schema": "https://raw.githubusercontent.com/Ferris-echo/PulseLite/main/schemas/fdas-v1.0.json",
   "fdasVersion": "1.0",
   "metadata": {
     "brand": "MCHOSE",

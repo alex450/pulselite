@@ -49,7 +49,7 @@ Write-Host "`n==========================================================" -Foreg
 Write-Host " [测试 2/5] C547 接收器中性回退名与非独占映射断言" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-$binPath = "$ProjectDir\FerrisPulse.exe"
+$binPath = "$ProjectDir\PulseLite.exe"
 $asmBytes = [System.IO.File]::ReadAllBytes($binPath)
 $asm = [System.Reflection.Assembly]::Load($asmBytes)
 $logiType = $asm.GetType("RazerBatteryTray.LogitechDeviceHelper")

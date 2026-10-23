@@ -1,7 +1,7 @@
 ﻿# ============================================================================
 # 脚本名称: pack_v2.0_zip.ps1
 # 所属区域: tools
-# 职责: 为 Gitee / GitHub Releases 规范打包 FerrisPulse_v{Version}_Portable.zip
+# 职责: 为 Gitee / GitHub Releases 规范打包 PulseLite_v{Version}_Portable.zip
 # ============================================================================
 
 param(
@@ -18,7 +18,7 @@ if (Test-Path $tempStage) { Remove-Item $tempStage -Recurse -Force }
 New-Item -ItemType Directory -Path $tempStage | Out-Null
 
 try {
-    Copy-Item (Join-Path $rootDir "FerrisPulse.exe") (Join-Path $tempStage "FerrisPulse.exe")
+    Copy-Item (Join-Path $rootDir "PulseLite.exe") (Join-Path $tempStage "PulseLite.exe")
     Copy-Item (Join-Path $rootDir "README.md") (Join-Path $tempStage "README.md")
     Copy-Item (Join-Path $rootDir "LICENSE") (Join-Path $tempStage "LICENSE")
     Copy-Item (Join-Path $rootDir "CHANGELOG.md") (Join-Path $tempStage "CHANGELOG.md")
@@ -33,7 +33,7 @@ try {
         Copy-Item $faq (Join-Path $tempStage "使用说明与常见问题.txt")
     }
 
-    $zipPath = Join-Path $rootDir "FerrisPulse_v${cleanVer}_Portable.zip"
+    $zipPath = Join-Path $rootDir "PulseLite_v${cleanVer}_Portable.zip"
     if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 
     Add-Type -AssemblyName System.IO.Compression.FileSystem

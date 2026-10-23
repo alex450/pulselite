@@ -25,14 +25,14 @@ namespace RazerBatteryTray
 {
     public static class StartupManager
     {
-        public const string AppName = "FerrisPulse";
-        public static readonly string[] LegacyAppNames = new string[] { "RazerBatteryTray", "RazerBattery", "RazerTray" };
+        public const string AppName = "PulseLite";
+        public static readonly string[] LegacyAppNames = new string[] { "FerrisPulse", "RazerBatteryTray", "RazerBattery", "RazerTray" };
         public const string RunRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
         public const string StartupApprovedRunKey = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
-        public const string AppUserModelId = "FerrisPulse.App";
+        public const string AppUserModelId = "PulseLite.App";
 
         /// <summary>
-        /// 检测当前系统是否已为 FerrisPulse 配置了开机自启动
+        /// 检测当前系统是否已为 PulseLite 配置了开机自启动
         /// 遵循安全迁移原则：先检查新名称，若不存在再检查历史旧名称，绝对不在此做删除
         /// </summary>
         public static bool IsAutoStartConfigured()
@@ -68,17 +68,17 @@ namespace RazerBatteryTray
                 if (!string.IsNullOrEmpty(currentExe))
                 {
                     string fileName = Path.GetFileName(currentExe);
-                    if (fileName.Equals("FerrisPulse.exe", StringComparison.OrdinalIgnoreCase))
+                    if (fileName.Equals("PulseLite.exe", StringComparison.OrdinalIgnoreCase))
                     {
                         return currentExe;
                     }
                 }
 
-                // 若当前为 PowerShell 或测试宿主进程，回退到当前基目录下的 FerrisPulse.exe
+                // 若当前为 PowerShell 或测试宿主进程，回退到当前基目录下的 PulseLite.exe
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
                 if (!string.IsNullOrEmpty(baseDir))
                 {
-                    string candidate = Path.Combine(baseDir, "FerrisPulse.exe");
+                    string candidate = Path.Combine(baseDir, "PulseLite.exe");
                     if (File.Exists(candidate))
                     {
                         return candidate;
@@ -89,7 +89,7 @@ namespace RazerBatteryTray
                 string curDir = Directory.GetCurrentDirectory();
                 if (!string.IsNullOrEmpty(curDir))
                 {
-                    string candidateCur = Path.Combine(curDir, "FerrisPulse.exe");
+                    string candidateCur = Path.Combine(curDir, "PulseLite.exe");
                     if (File.Exists(candidateCur))
                     {
                         return candidateCur;
@@ -101,7 +101,7 @@ namespace RazerBatteryTray
                 if (!string.IsNullOrEmpty(asmLocation))
                 {
                     string asmDir = Path.GetDirectoryName(asmLocation);
-                    string candidate2 = Path.Combine(asmDir, "FerrisPulse.exe");
+                    string candidate2 = Path.Combine(asmDir, "PulseLite.exe");
                     if (File.Exists(candidate2))
                     {
                         return candidate2;
@@ -221,7 +221,7 @@ namespace RazerBatteryTray
 
                 string startMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Start Menu\Programs");
                 if (!Directory.Exists(startMenu)) Directory.CreateDirectory(startMenu);
-                string lnkPath = Path.Combine(startMenu, "FerrisPulse · 灵脉.lnk");
+                string lnkPath = Path.Combine(startMenu, "PulseLite.lnk");
                 string targetExe = GetApplicationExecutablePath();
                 string dir = Path.GetDirectoryName(targetExe);
                 string icoPath = Path.Combine(dir, "app.ico");
@@ -248,7 +248,7 @@ namespace RazerBatteryTray
                     link.SetPath(targetExe);
                     link.SetWorkingDirectory(dir);
                     link.SetIconLocation(icoPath, 0);
-                    link.SetDescription("FerrisPulse · 灵脉 外设电量感知引擎");
+                    link.SetDescription("PulseLite 外设电量感知引擎");
 
                     IPropertyStore store = (IPropertyStore)link;
                     PROPERTYKEY key = new PROPERTYKEY();
@@ -283,7 +283,7 @@ namespace RazerBatteryTray
                     {
                         if (appKey != null)
                         {
-                            appKey.SetValue("DisplayName", "FerrisPulse · 灵脉");
+                            appKey.SetValue("DisplayName", "PulseLite");
                             appKey.SetValue("IconUri", icoPath);
                             appKey.SetValue("IconBackgroundColor", "00000000");
                         }
@@ -326,16 +326,16 @@ namespace RazerBatteryTray
                     return false;
                 }
 
-                string lnkPath = Path.Combine(desktop, "FerrisPulse · 灵脉.lnk");
+                string lnkPath = Path.Combine(desktop, "PulseLite.lnk");
                 string targetExe = GetApplicationExecutablePath();
                 if (string.IsNullOrEmpty(targetExe) ||
                     targetExe.IndexOf("powershell", StringComparison.OrdinalIgnoreCase) >= 0 ||
                     targetExe.IndexOf("cmd.exe", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    string fallback = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FerrisPulse.exe");
+                    string fallback = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PulseLite.exe");
                     if (!File.Exists(fallback))
                     {
-                        fallback = Path.Combine(Directory.GetCurrentDirectory(), "FerrisPulse.exe");
+                        fallback = Path.Combine(Directory.GetCurrentDirectory(), "PulseLite.exe");
                     }
                     if (File.Exists(fallback))
                     {
@@ -361,7 +361,7 @@ namespace RazerBatteryTray
                 {
                     link.SetIconLocation(targetExe, 0);
                 }
-                link.SetDescription("FerrisPulse · 灵脉 外设电量感知引擎");
+                link.SetDescription("PulseLite 外设电量感知引擎");
 
                 IPropertyStore store = (IPropertyStore)link;
                 PROPERTYKEY key = new PROPERTYKEY();

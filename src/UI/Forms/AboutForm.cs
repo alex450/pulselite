@@ -180,7 +180,7 @@ namespace RazerBatteryTray
 
         private void InitializeAboutUI()
         {
-            this.Text = "关于 FerrisPulse";
+            this.Text = "关于 PulseLite";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -241,7 +241,7 @@ namespace RazerBatteryTray
             pnlFront.Paint += PnlFront_Paint;
 
             lblLogo = new Label();
-            lblLogo.Text = "FerrisPulse · 灵脉";
+            lblLogo.Text = "PulseLite";
             lblLogo.Font = new Font("Microsoft YaHei UI", 14F, FontStyle.Bold);
             lblLogo.ForeColor = Color.FromArgb(245, 248, 255);
             lblLogo.BackColor = Color.Transparent;
@@ -413,7 +413,7 @@ namespace RazerBatteryTray
             cardDonate.Controls.Add(lnkQQ);
 
             lnkGithub = new LinkLabel();
-            lnkGithub.Text = "GitHub: Ferris-echo/FerrisPulse";
+            lnkGithub.Text = "GitHub: Ferris-echo/PulseLite";
             lnkGithub.Font = new Font("Microsoft YaHei UI", 8.8F);
             lnkGithub.LinkColor = Color.FromArgb(0, 215, 115);
             lnkGithub.ActiveLinkColor = Color.FromArgb(0, 255, 130);
@@ -422,7 +422,7 @@ namespace RazerBatteryTray
             lnkGithub.AutoSize = true;
             lnkGithub.LinkClicked += delegate(object s, LinkLabelLinkClickedEventArgs e)
             {
-                try { Process.Start("https://github.com/Ferris-echo/FerrisPulse"); } catch { }
+                try { Process.Start("https://github.com/Ferris-echo/PulseLite"); } catch { }
             };
             cardDonate.Controls.Add(lnkGithub);
 

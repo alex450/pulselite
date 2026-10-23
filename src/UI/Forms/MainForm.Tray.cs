@@ -316,14 +316,14 @@ namespace RazerBatteryTray
                 bool ok = StartupManager.CreateDesktopShortcut(true);
                 if (ok && trayIcon != null)
                 {
-                    try { trayIcon.ShowBalloonTip(3000, "桌面快捷方式已创建", "已成功在桌面为您生成 FerrisPulse · 灵脉 快捷方式！", ToolTipIcon.Info); } catch { }
+                    try { trayIcon.ShowBalloonTip(3000, "桌面快捷方式已创建", "已成功在桌面为您生成 PulseLite 快捷方式！", ToolTipIcon.Info); } catch { }
                 }
             });
             contextMenu.Items.Add(createDesktopLnkItem);
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
-            aboutMenuItem = new ToolStripMenuItem("关于 FerrisPulse", null, (s, e) => OpenAboutForm());
+            aboutMenuItem = new ToolStripMenuItem("关于 PulseLite", null, (s, e) => OpenAboutForm());
             contextMenu.Items.Add(aboutMenuItem);
 
             checkUpdateMenuItem = new ToolStripMenuItem("检查更新", null, (s, e) => OnTrayUpdateMenuItemClicked());
@@ -347,7 +347,7 @@ namespace RazerBatteryTray
 
             trayIcon = new NotifyIcon();
             trayIcon.ContextMenuStrip = contextMenu;
-            trayIcon.Text = "FerrisPulse · 灵脉 (正在检测外设...)";
+            trayIcon.Text = "PulseLite (正在检测外设...)";
             if (this.Icon != null)
             {
                 trayIcon.Icon = this.Icon;

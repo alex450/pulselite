@@ -30,11 +30,11 @@ $cleanVer = $Version.Trim().TrimStart('v', 'V')
 $tag = "v$cleanVer"
 
 if ([string]::IsNullOrEmpty($Title)) {
-    $Title = "FerrisPulse · 灵脉 $tag 正式版"
+    $Title = "PulseLite $tag 正式版"
 }
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host " [FerrisPulse 发布流水线] 开始全自动双平台发布: $tag" -ForegroundColor Cyan
+Write-Host " [PulseLite 发布流水线] 开始全自动双平台发布: $tag" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 # 1. 加载安全隔离的 API Token
@@ -54,7 +54,7 @@ $giteeToken = [Environment]::GetEnvironmentVariable("GITEE_TOKEN", "Process")
 $ghRepo = [Environment]::GetEnvironmentVariable("GITHUB_REPO", "Process")
 $giteeRepo = [Environment]::GetEnvironmentVariable("GITEE_REPO", "Process")
 
-if (-not $ghRepo) { $ghRepo = "Ferris-echo/FerrisPulse" }
+if (-not $ghRepo) { $ghRepo = "Ferris-echo/PulseLite" }
 if (-not $giteeRepo) { $giteeRepo = "Ferris-echo/ferris-pulse" }
 
 if (-not $ghToken -or -not $giteeToken) {
@@ -74,16 +74,16 @@ $utf8WithBom = New-Object System.Text.UTF8Encoding($true)
 
 # 3. 执行纯净构建
 Write-Host "`n[2/7] 执行原生 build.bat 编译 (C# 5.0 / .NET 4.0)..." -ForegroundColor Yellow
-Stop-Process -Name "FerrisPulse" -Force -ErrorAction SilentlyContinue
+Stop-Process -Name "PulseLite" -Force -ErrorAction SilentlyContinue
 Start-Sleep -Milliseconds 500
 & cmd.exe /c "build.bat"
-if ($LASTEXITCODE -ne 0 -or -not (Test-Path (Join-Path $rootDir "FerrisPulse.exe"))) {
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path (Join-Path $rootDir "PulseLite.exe"))) {
     Write-Error "编译失败！请检查编译输出。"
     exit 1
 }
 
 # 4. 计算文件 SHA256 与文件大小
-$exePath = Join-Path $rootDir "FerrisPulse.exe"
+$exePath = Join-Path $rootDir "PulseLite.exe"
 $sha256 = (Get-FileHash -Path $exePath -Algorithm SHA256).Hash.ToLower()
 $fileSize = (Get-Item $exePath).Length
 Write-Host "`n[3/7] 产物校验和已生成: SHA256=$sha256, Size=$fileSize bytes" -ForegroundColor Green
@@ -92,7 +92,7 @@ Write-Host "`n[3/7] 产物校验和已生成: SHA256=$sha256, Size=$fileSize byt
 Write-Host "`n[4/7] 更新 version.json 云端自更新配置..." -ForegroundColor Yellow
 $versionJsonPath = Join-Path $rootDir "version.json"
 $today = (Get-Date).ToString("yyyy-MM-dd")
-$downloadUrl = "https://gitee.com/$giteeRepo/releases/download/$tag/FerrisPulse.exe"
+$downloadUrl = "https://gitee.com/$giteeRepo/releases/download/$tag/PulseLite.exe"
 
 $vObj = Get-Content $versionJsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $vObj.latestVersion = $cleanVer
@@ -121,9 +121,9 @@ $updatedJson = $updatedJson.Replace("\u0026", "&")
 [System.IO.File]::WriteAllText($versionJsonPath, $updatedJson, $utf8WithBom)
 
 # 6. 生成便携版压缩包
-Write-Host "`n[5/7] 打包便携版 ZIP (FerrisPulse_${tag}_Portable.zip)..." -ForegroundColor Yellow
+Write-Host "`n[5/7] 打包便携版 ZIP (PulseLite_${tag}_Portable.zip)..." -ForegroundColor Yellow
 & "$PSScriptRoot\build_release_zip.ps1" -Version $cleanVer
-$zipPath = Join-Path $rootDir "FerrisPulse_${tag}_Portable.zip"
+$zipPath = Join-Path $rootDir "PulseLite_${tag}_Portable.zip"
 if (-not (Test-Path $zipPath)) {
     Write-Error "ZIP 打包失败！"
     exit 1
@@ -150,7 +150,7 @@ $releaseBody = ""
 if ($Changelog.Count -gt 0) {
     $releaseBody = "### 🌟 更新日志`n`n" + (($Changelog | ForEach-Object { "* " + $_ }) -join "`n")
 } else {
-    $releaseBody = "### 🌟 FerrisPulse $tag 正式版`n`n* 本次更新包含最新稳定性与功能优化。"
+    $releaseBody = "### 🌟 PulseLite $tag 正式版`n`n* 本次更新包含最新稳定性与功能优化。"
 }
 
 # 8.1 GitHub Release 创建与资产上传
@@ -158,7 +158,7 @@ Write-Host "  -> [GitHub] 检查/创建 Release $tag..." -ForegroundColor Cyan
 $ghHeaders = @{
     "Authorization" = "Bearer $ghToken"
     "Accept" = "application/vnd.github.v3+json"
-    "User-Agent" = "FerrisPulse-Release"
+    "User-Agent" = "PulseLite-Release"
 }
 
 $ghReleaseId = $null
@@ -185,18 +185,18 @@ if ($ghReleaseId) {
     try {
         $existingAssets = Invoke-RestMethod -Uri "https://api.github.com/repos/$ghRepo/releases/$ghReleaseId/assets" -Headers $ghHeaders
         foreach ($ea in $existingAssets) {
-            if ($ea.name -eq "FerrisPulse.exe" -or $ea.name -eq "FerrisPulse_${tag}_Portable.zip") {
+            if ($ea.name -eq "PulseLite.exe" -or $ea.name -eq "PulseLite_${tag}_Portable.zip") {
                 Write-Host "  -> [GitHub] 删除旧版本资产: $($ea.name) (ID: $($ea.id))..." -ForegroundColor DarkGray
                 Invoke-RestMethod -Uri "https://api.github.com/repos/$ghRepo/releases/assets/$($ea.id)" -Method Delete -Headers $ghHeaders | Out-Null
             }
         }
     } catch { }
 
-    Write-Host "  -> [GitHub] 上传 FerrisPulse.exe..." -ForegroundColor Cyan
-    & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$ghReleaseId/assets?name=FerrisPulse.exe" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$exePath" | Out-Null
+    Write-Host "  -> [GitHub] 上传 PulseLite.exe..." -ForegroundColor Cyan
+    & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$ghReleaseId/assets?name=PulseLite.exe" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$exePath" | Out-Null
     
-    Write-Host "  -> [GitHub] 上传 FerrisPulse_${tag}_Portable.zip..." -ForegroundColor Cyan
-    & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$ghReleaseId/assets?name=FerrisPulse_${tag}_Portable.zip" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$zipPath" | Out-Null
+    Write-Host "  -> [GitHub] 上传 PulseLite_${tag}_Portable.zip..." -ForegroundColor Cyan
+    & curl.exe -s -X POST "https://uploads.github.com/repos/$ghRepo/releases/$ghReleaseId/assets?name=PulseLite_${tag}_Portable.zip" -H "Authorization: Bearer $ghToken" -H "Content-Type: application/octet-stream" --data-binary "@$zipPath" | Out-Null
     Write-Host "  -> [GitHub] 资产上传完成！" -ForegroundColor Green
 }
 
@@ -204,7 +204,7 @@ if ($ghReleaseId) {
 Write-Host "  -> [Gitee] 检查/创建 Release $tag..." -ForegroundColor Cyan
 $giteeReleaseId = $null
 try {
-    $giteeAll = Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases?access_token=$giteeToken" -UserAgent "FerrisPulse-Release"
+    $giteeAll = Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases?access_token=$giteeToken" -UserAgent "PulseLite-Release"
     foreach ($r in $giteeAll) {
         if ($r.tag_name -eq $tag) {
             $giteeReleaseId = $r.id
@@ -222,7 +222,7 @@ if (-not $giteeReleaseId) {
         body = $releaseBody
         target_commitish = "main"
     }
-    $newGiteeRel = Invoke-RestMethod -Uri $giteeCreateUri -Method Post -Body $giteeParams -UserAgent "FerrisPulse-Release"
+    $newGiteeRel = Invoke-RestMethod -Uri $giteeCreateUri -Method Post -Body $giteeParams -UserAgent "PulseLite-Release"
     $giteeReleaseId = $newGiteeRel.id
     Write-Host "  -> [Gitee] Release 创建成功 (ID: $giteeReleaseId)" -ForegroundColor Green
 } else {
@@ -232,21 +232,21 @@ if (-not $giteeReleaseId) {
 if ($giteeReleaseId) {
     # 检查并删除 Gitee 已存在的同名资产
     try {
-        $giteeRelInfo = Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$giteeReleaseId?access_token=$giteeToken" -UserAgent "FerrisPulse-Release"
+        $giteeRelInfo = Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$giteeReleaseId?access_token=$giteeToken" -UserAgent "PulseLite-Release"
         foreach ($ga in $giteeRelInfo.assets) {
-            if ($ga.name -eq "FerrisPulse.exe" -or $ga.name -eq "FerrisPulse_${tag}_Portable.zip") {
+            if ($ga.name -eq "PulseLite.exe" -or $ga.name -eq "PulseLite_${tag}_Portable.zip") {
                 Write-Host "  -> [Gitee] 删除旧版本资产: $($ga.name)..." -ForegroundColor DarkGray
                 try {
-                    Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$giteeReleaseId/attach_files/$($ga.id)?access_token=$giteeToken" -Method Delete -UserAgent "FerrisPulse-Release" | Out-Null
+                    Invoke-RestMethod -Uri "https://gitee.com/api/v5/repos/$giteeRepo/releases/$giteeReleaseId/attach_files/$($ga.id)?access_token=$giteeToken" -Method Delete -UserAgent "PulseLite-Release" | Out-Null
                 } catch { }
             }
         }
     } catch { }
 
-    Write-Host "  -> [Gitee] 上传 FerrisPulse.exe..." -ForegroundColor Cyan
+    Write-Host "  -> [Gitee] 上传 PulseLite.exe..." -ForegroundColor Cyan
     & curl.exe -s -X POST "https://gitee.com/api/v5/repos/$giteeRepo/releases/$giteeReleaseId/attach_files" -F "access_token=$giteeToken" -F "file=@$exePath" | Out-Null
     
-    Write-Host "  -> [Gitee] 上传 FerrisPulse_${tag}_Portable.zip..." -ForegroundColor Cyan
+    Write-Host "  -> [Gitee] 上传 PulseLite_${tag}_Portable.zip..." -ForegroundColor Cyan
     & curl.exe -s -X POST "https://gitee.com/api/v5/repos/$giteeRepo/releases/$giteeReleaseId/attach_files" -F "access_token=$giteeToken" -F "file=@$zipPath" | Out-Null
     Write-Host "  -> [Gitee] 资产上传完成！" -ForegroundColor Green
 }

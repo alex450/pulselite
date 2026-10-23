@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 
-$fullPath = (Resolve-Path "FerrisPulse.exe").Path
+$fullPath = (Resolve-Path "PulseLite.exe").Path
 $bytes = [System.IO.File]::ReadAllBytes($fullPath)
 $asm = [System.Reflection.Assembly]::Load($bytes)
 

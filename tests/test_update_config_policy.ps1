@@ -10,7 +10,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Get-Item "$scriptDir\..").FullName
 
 # 1. 编译并加载待测程序集
-$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "FerrisPulse_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
+$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "PulseLite_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path $csc)) {
     $csc = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"

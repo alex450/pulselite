@@ -26,9 +26,9 @@ namespace RazerBatteryTray
 {
     static class Program
     {
-        private const string SingleInstanceMutexName = @"Global\FerrisPulse_SingleInstance_Mutex";
-        public const string SingleInstanceEventName = @"Global\FerrisPulse_Wakeup_Event";
-        public static readonly int WM_SHOWME = NativeMethods.RegisterWindowMessage("FerrisPulse_ActivateExistingInstance");
+        private const string SingleInstanceMutexName = @"Global\PulseLite_SingleInstance_Mutex";
+        public const string SingleInstanceEventName = @"Global\PulseLite_Wakeup_Event";
+        public static readonly int WM_SHOWME = NativeMethods.RegisterWindowMessage("PulseLite_ActivateExistingInstance");
 
         private static Mutex appMutex = null;
 
@@ -71,12 +71,12 @@ namespace RazerBatteryTray
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += (s, e) => {
                 string msg = e.Exception != null ? (e.Exception.Message + "\n\n" + e.Exception.StackTrace) : "未知线程异常";
-                MessageBox.Show("程序发生异常: " + msg, "FerrisPulse · 灵脉 - 错误提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("程序发生异常: " + msg, "PulseLite - 错误提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             };
             AppDomain.CurrentDomain.UnhandledException += (s, e) => {
                 Exception ex = e.ExceptionObject as Exception;
                 string msg = ex != null ? (ex.Message + "\n\n" + ex.StackTrace) : "未知系统错误";
-                MessageBox.Show("未处理的致命异常: " + msg, "FerrisPulse · 灵脉 - 致命错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("未处理的致命异常: " + msg, "PulseLite - 致命错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             };
 
             // 5. 解析命令行参数
@@ -95,7 +95,7 @@ namespace RazerBatteryTray
 
             // 6. 系统全局单实例检测与健康活体监测（彻底根除死进程锁死导致打不开软件的问题）
             Process currentProc = Process.GetCurrentProcess();
-            Process[] allProcs = Process.GetProcessesByName("FerrisPulse");
+            Process[] allProcs = Process.GetProcessesByName("PulseLite");
             Process existingProc = null;
             for (int i = 0; i < allProcs.Length; i++)
             {
@@ -145,7 +145,7 @@ namespace RazerBatteryTray
             }
             else
             {
-                // 系统中无任何其他运行中的 FerrisPulse 进程，绝对接管为主实例
+                // 系统中无任何其他运行中的 PulseLite 进程，绝对接管为主实例
                 isNewInstance = true;
             }
 

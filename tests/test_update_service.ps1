@@ -13,7 +13,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Get-Item "$scriptDir\..").FullName
 
 # 1. 编译并加载待测程序集
-$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "FerrisPulse_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
+$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "PulseLite_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path $csc)) {
     $csc = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
@@ -97,7 +97,7 @@ try {
   "latestVersion": "4.3.0",
   "releaseDate": "2026-10-05",
   "minSupportedVersion": "4.0.0",
-  "downloadUrl": "https://github.com/Ferris-echo/FerrisPulse/releases/download/v4.3.0/FerrisPulse.exe",
+  "downloadUrl": "https://github.com/Ferris-echo/PulseLite/releases/download/v4.3.0/PulseLite.exe",
   "sha256": "4a7d6e8b9c0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b",
   "fileSize": 12845056,
   "changelog": [
@@ -122,7 +122,7 @@ try {
         Write-Error "FAIL: ReleaseDate expected '2026-10-05', got '$($parsedInfo.ReleaseDate)'"
         exit 1
     }
-    if ($parsedInfo.DownloadUrl -ne "https://github.com/Ferris-echo/FerrisPulse/releases/download/v4.3.0/FerrisPulse.exe") {
+    if ($parsedInfo.DownloadUrl -ne "https://github.com/Ferris-echo/PulseLite/releases/download/v4.3.0/PulseLite.exe") {
         Write-Error "FAIL: DownloadUrl mismatch!"
         exit 1
     }
@@ -147,7 +147,7 @@ try {
         exit 1
     }
     $sampleFile = [System.IO.Path]::GetTempFileName()
-    [System.IO.File]::WriteAllText($sampleFile, "FerrisPulse Test Content 12345", [System.Text.Encoding]::UTF8)
+    [System.IO.File]::WriteAllText($sampleFile, "PulseLite Test Content 12345", [System.Text.Encoding]::UTF8)
     $actualHash = $shaMethod.Invoke($null, @($sampleFile))
     $expectedHash = (Get-FileHash -Path $sampleFile -Algorithm SHA256).Hash.ToLowerInvariant()
     Remove-Item $sampleFile -Force -ErrorAction SilentlyContinue

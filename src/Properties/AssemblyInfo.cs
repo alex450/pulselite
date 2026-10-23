@@ -14,13 +14,13 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("FerrisPulse · 灵脉")]
+[assembly: AssemblyTitle("PulseLite")]
 [assembly: AssemblyDescription("多品牌电竞外设电量管家与独占感知引擎")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ferris-echo")]
-[assembly: AssemblyProduct("FerrisPulse · 灵脉")]
+[assembly: AssemblyProduct("PulseLite")]
 [assembly: AssemblyCopyright("Copyright © 2026 Ferris-echo. All rights reserved.")]
-[assembly: AssemblyTrademark("FerrisPulse")]
+[assembly: AssemblyTrademark("PulseLite")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]

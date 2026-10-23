@@ -1,10 +1,10 @@
 ﻿# tests\test_razer_dpi_protocol.ps1
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
 if (-not (Test-Path $asmPath)) {
-    $asmPath = "FerrisPulse.exe"
+    $asmPath = "PulseLite.exe"
 }
 if (-not (Test-Path $asmPath)) {
-    Write-Host "RED: FerrisPulse.exe not found for testing!" -ForegroundColor Red
+    Write-Host "RED: PulseLite.exe not found for testing!" -ForegroundColor Red
     exit 1
 }
 $fullPath = (Resolve-Path $asmPath).Path

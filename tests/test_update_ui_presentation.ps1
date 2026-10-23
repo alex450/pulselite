@@ -11,7 +11,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Get-Item "$scriptDir\..").FullName
 
 # 1. 编译并加载待测程序集
-$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "FerrisPulse_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
+$tempDll = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "PulseLite_Test_" + [System.Guid]::NewGuid().ToString("N") + ".dll")
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path $csc)) {
     $csc = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
@@ -40,7 +40,7 @@ try {
     $info = [System.Activator]::CreateInstance($updateInfoType)
     $info.LatestVersion = "4.3.0"
     $info.ReleaseDate = "2026-10-05"
-    $info.DownloadUrl = "https://github.com/Ferris-echo/FerrisPulse/releases/download/v4.3.0/FerrisPulse.exe"
+    $info.DownloadUrl = "https://github.com/Ferris-echo/PulseLite/releases/download/v4.3.0/PulseLite.exe"
     $info.Sha256 = "dummy-sha256"
     $info.Changelog.Add("全新全自动在线热更新与暗黑美学")
     $info.Changelog.Add("优化外设待机休眠与连接探测")

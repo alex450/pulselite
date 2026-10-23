@@ -7,7 +7,7 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 # Test 1: Verify DpiScaleHelper existence and mathematical accuracy
-$rawBytes = [System.IO.File]::ReadAllBytes((Join-Path (Get-Location) "FerrisPulse.exe"))
+$rawBytes = [System.IO.File]::ReadAllBytes((Join-Path (Get-Location) "PulseLite.exe"))
 $asm = [System.Reflection.Assembly]::Load($rawBytes)
 $helperType = $asm.GetType("RazerBatteryTray.DpiScaleHelper")
 

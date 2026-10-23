@@ -45,7 +45,7 @@ Write-Host "`n==========================================================" -Foreg
 Write-Host " [测试 2/5] ATK / 玄熊猫 / 怒喵 产品目录与极速回报率断言" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-$binPath = "$ProjectDir\FerrisPulse.exe"
+$binPath = "$ProjectDir\PulseLite.exe"
 $asmBytes = [System.IO.File]::ReadAllBytes($binPath)
 $asm = [System.Reflection.Assembly]::Load($asmBytes)
 $ugType = $asm.GetType("RazerBatteryTray.UniversalGamingDeviceHelper")

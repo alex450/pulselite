@@ -2,8 +2,8 @@
 # 验证：Razer Viper V3 Pro SE (0x00DE Wired / 0x00DF Dongle) 硬件识别与归一化
 $ErrorActionPreference = "Stop"
 
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { $asmPath = "FerrisPulse.exe" }
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
+if (-not (Test-Path $asmPath)) { $asmPath = "PulseLite.exe" }
 $fullPath = (Resolve-Path $asmPath).Path
 $asm = [System.Reflection.Assembly]::LoadFile($fullPath)
 

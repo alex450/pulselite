@@ -1,9 +1,9 @@
 ﻿# tests/test_polling_rates_adaptive.ps1
 # Verification script for polling rates adaptive detection and layout rules
 
-$exePath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
+$exePath = Join-Path $PSScriptRoot "..\PulseLite.exe"
 if (-not (Test-Path $exePath)) {
-    Write-Error "FerrisPulse.exe not found at $exePath"
+    Write-Error "PulseLite.exe not found at $exePath"
     exit 1
 }
 

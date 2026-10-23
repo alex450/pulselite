@@ -103,7 +103,7 @@ namespace RazerBatteryTray
             try
             {
                 string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string dir = Path.Combine(appData, Path.Combine("FerrisPulse", "adapters"));
+                string dir = Path.Combine(appData, Path.Combine("PulseLite", "adapters"));
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);

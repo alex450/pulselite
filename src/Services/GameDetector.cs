@@ -89,7 +89,7 @@ namespace RazerBatteryTray
                             nameLower == "searchhost" || nameLower == "shellexperiencehost" ||
                             nameLower == "startmenuexperiencehost" || nameLower == "taskmgr" ||
                             nameLower == "applicationframehost" || nameLower == "textinputhost" ||
-                            nameLower == "ferrispulse" || nameLower == "chrome" ||
+                            nameLower == "pulselite" || nameLower == "ferrispulse" || nameLower == "chrome" ||
                             nameLower == "msedge" || nameLower == "firefox" ||
                             nameLower == "brave" || nameLower == "opera" ||
                             nameLower == "potplayer" || nameLower == "potplayermini64" ||

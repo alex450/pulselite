@@ -6,7 +6,7 @@
 
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $root
-$exePath = Join-Path $root "FerrisPulse.exe"
+$exePath = Join-Path $root "PulseLite.exe"
 
 $rawBytes = [System.IO.File]::ReadAllBytes($exePath)
 $asm = [System.Reflection.Assembly]::Load($rawBytes)

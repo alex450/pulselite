@@ -7,8 +7,8 @@
 # ============================================================================
 $ErrorActionPreference = "Stop"
 
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { $asmPath = "FerrisPulse.exe" }
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
+if (-not (Test-Path $asmPath)) { $asmPath = "PulseLite.exe" }
 $fullPath = (Resolve-Path $asmPath).Path
 $bytes = [System.IO.File]::ReadAllBytes($fullPath)
 $asm = [System.Reflection.Assembly]::Load($bytes)
@@ -80,7 +80,7 @@ if (-not $pureNumItem.Checked) {
 Write-Host "PASS: SetTrayStyle(2) correctly sets trayStyle = 2 and checks pureNumItem." -ForegroundColor Green
 
 # 3. 验证注册表持久化与 LoadConfig
-$regKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Software\FerrisPulse")
+$regKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Software\PulseLite")
 if ($regKey -ne $null) {
     $savedStyle = $regKey.GetValue("TrayIconStyle")
     $regKey.Close()

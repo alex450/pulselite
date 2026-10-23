@@ -44,7 +44,7 @@ namespace RazerBatteryTray
             this.fallbackEnabled = initialFallback;
             this.onSaveCallback = callback;
 
-            this.Text = "FerrisPulse · 电竞游戏进程管理与自动捕获";
+            this.Text = "PulseLite · 电竞游戏进程管理与自动捕获";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -333,7 +333,7 @@ namespace RazerBatteryTray
 
                     string nameLower = name.ToLower();
                     if (nameLower == "explorer" || nameLower == "taskmgr" || nameLower == "devenv" ||
-                        nameLower == "ferrispulse" || nameLower == "razerbatterytray" ||
+                        nameLower == "pulselite" || nameLower == "ferrispulse" || nameLower == "razerbatterytray" ||
                         nameLower == "textinputhost" || nameLower == "applicationframehost" ||
                         nameLower == "searchhost" || nameLower == "shellexperiencehost" ||
                         nameLower == "startmenuexperiencehost" || nameLower == "lockapp" ||

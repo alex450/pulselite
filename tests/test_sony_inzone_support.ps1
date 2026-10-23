@@ -59,7 +59,7 @@ Write-Host "`n==========================================================" -Foreg
 Write-Host " [测试 3/5] 主动电量查询报文建帧与发送校验和断言" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-$binPath = "$ProjectDir\FerrisPulse.exe"
+$binPath = "$ProjectDir\PulseLite.exe"
 if (-not (Test-Path $binPath)) {
     Write-Host "编译二进制以供反射测试..." -ForegroundColor Yellow
     cmd /c "$ProjectDir\build.bat" | Out-Null

@@ -2,7 +2,7 @@
 # Root cause: Missing packet class/id validation and unvalidated stage values in Razer FastQueryDpi & DpiMonitorWorker
 $currentDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $currentDir
-$exePath = Join-Path $root "FerrisPulse.exe"
+$exePath = Join-Path $root "PulseLite.exe"
 $rawBytes = [System.IO.File]::ReadAllBytes($exePath)
 $asm = [System.Reflection.Assembly]::Load($rawBytes)
 $rdh = $asm.GetType('RazerBatteryTray.RazerDeviceHelper')

@@ -2,8 +2,8 @@
 # 验证托盘左键点击唤醒窗口时，窗口状态遵循系统级还原动画规范 (Minimized -> SW_RESTORE -> Normal)
 $ErrorActionPreference = "Stop"
 
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { $asmPath = "FerrisPulse.exe" }
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
+if (-not (Test-Path $asmPath)) { $asmPath = "PulseLite.exe" }
 $fullPath = (Resolve-Path $asmPath).Path
 
 # 采用全内存加载模式，严禁独占锁定 exe 文件句柄

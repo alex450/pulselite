@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 
-$regPath = "HKCU:\Software\FerrisPulse"
+$regPath = "HKCU:\Software\PulseLite"
 if (-not (Test-Path $regPath)) {
     New-Item -Path $regPath -Force | Out-Null
 }
@@ -18,8 +18,8 @@ Set-ItemProperty -Path $regPath -Name "WindowY" -Value $expectedY -Type DWord
 Write-Host "Injected test coordinates into registry: ($expectedX, $expectedY)"
 
 # 2. 反射加载并实例化 MainForm
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { $asmPath = "FerrisPulse.exe" }
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
+if (-not (Test-Path $asmPath)) { $asmPath = "PulseLite.exe" }
 $fullPath = (Resolve-Path $asmPath).Path
 $bytes = [System.IO.File]::ReadAllBytes($fullPath)
 $asm = [System.Reflection.Assembly]::Load($bytes)

@@ -1,12 +1,12 @@
 ﻿# tests\test_razer_basilisk_v3_pro_35k.ps1
 # 验证雷蛇巴蛇 V3 专业版 35K (Razer Basilisk V3 Pro 35K) 设备识别与硬件能力契约
 
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
 if (-not (Test-Path $asmPath)) {
-    $asmPath = "FerrisPulse.exe"
+    $asmPath = "PulseLite.exe"
 }
 if (-not (Test-Path $asmPath)) {
-    Write-Host "RED: FerrisPulse.exe not found for testing!" -ForegroundColor Red
+    Write-Host "RED: PulseLite.exe not found for testing!" -ForegroundColor Red
     exit 1
 }
 

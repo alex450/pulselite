@@ -15,17 +15,17 @@ $sandbox = Join-Path ([System.IO.Path]::GetTempPath()) ("FP_AVTest_" + [System.G
 New-Item -ItemType Directory -Path $sandbox | Out-Null
 
 try {
-    $srcExe = Join-Path $repoRoot "FerrisPulse.exe"
+    $srcExe = Join-Path $repoRoot "PulseLite.exe"
     if (-not (Test-Path $srcExe)) {
-        Write-Error "FAIL: FerrisPulse.exe not found at $srcExe!"
+        Write-Error "FAIL: PulseLite.exe not found at $srcExe!"
         exit 1
     }
 
-    $appExe = Join-Path $sandbox "FerrisPulse.exe"
+    $appExe = Join-Path $sandbox "PulseLite.exe"
     Copy-Item $srcExe $appExe
 
     # 准备一个微型模拟更新包 (新版本二进制)
-    $dummyUpdate = Join-Path $sandbox "FerrisPulse_new.exe"
+    $dummyUpdate = Join-Path $sandbox "PulseLite_new.exe"
     Copy-Item $srcExe $dummyUpdate
 
     # 2. 模拟运行时重命名逻辑 (NTFS In-Process Rename)

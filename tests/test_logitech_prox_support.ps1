@@ -52,7 +52,7 @@ Write-Host "`n==========================================================" -Foreg
 Write-Host " [测试 3/4] 编译并使用全内存反射校验 ADC 解析与放电曲线" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-$binPath = "$ProjectDir\FerrisPulse.exe"
+$binPath = "$ProjectDir\PulseLite.exe"
 if (-not (Test-Path $binPath)) {
     Write-Host "编译二进制以供测试反射..." -ForegroundColor Yellow
     cmd /c "$ProjectDir\build.bat" | Out-Null

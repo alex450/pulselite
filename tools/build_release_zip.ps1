@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 if ([string]::IsNullOrEmpty($Version)) { $Version = "2.0.3" }
 $rootDir = (Resolve-Path "$PSScriptRoot\..").Path
 $cleanVer = $Version.TrimStart('v', 'V')
-$zipPath = Join-Path $rootDir "FerrisPulse_v${cleanVer}_Portable.zip"
+$zipPath = Join-Path $rootDir "PulseLite_v${cleanVer}_Portable.zip"
 
 if (Test-Path $zipPath) {
     Remove-Item $zipPath -Force
@@ -16,7 +16,7 @@ if (Test-Path $tempStage) { Remove-Item $tempStage -Recurse -Force }
 New-Item -ItemType Directory -Path $tempStage | Out-Null
 
 try {
-    Copy-Item (Join-Path $rootDir "FerrisPulse.exe") (Join-Path $tempStage "FerrisPulse.exe")
+    Copy-Item (Join-Path $rootDir "PulseLite.exe") (Join-Path $tempStage "PulseLite.exe")
     Copy-Item (Join-Path $rootDir "README.md") (Join-Path $tempStage "README.md")
     Copy-Item (Join-Path $rootDir "LICENSE") (Join-Path $tempStage "LICENSE")
     Copy-Item (Join-Path $rootDir "CHANGELOG.md") (Join-Path $tempStage "CHANGELOG.md")

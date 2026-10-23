@@ -3,8 +3,8 @@
 
 $ErrorActionPreference = "Stop"
 
-$asmPath = Join-Path $PSScriptRoot "..\FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { $asmPath = "FerrisPulse.exe" }
+$asmPath = Join-Path $PSScriptRoot "..\PulseLite.exe"
+if (-not (Test-Path $asmPath)) { $asmPath = "PulseLite.exe" }
 $fullPath = (Resolve-Path $asmPath).Path
 $bytes = [System.IO.File]::ReadAllBytes($fullPath)
 $asm = [System.Reflection.Assembly]::Load($bytes)

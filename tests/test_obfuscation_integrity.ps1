@@ -3,7 +3,7 @@
 # 验证内容:
 #   开源发布纯净二进制契约：
 #   1. build.bat 遵从开源策略，默认发布纯净标准的 Raw Binary（停用 Obfuscar 混淆）
-#   2. 产物 FerrisPulse.exe 具备完整的 PE 元数据与清晰的程序集符号，彻底规避杀软启发式误报
+#   2. 产物 PulseLite.exe 具备完整的 PE 元数据与清晰的程序集符号，彻底规避杀软启发式误报
 # ============================================================================
 
 $ErrorActionPreference = "Stop"
@@ -19,10 +19,10 @@ if ($batContent -match "tools\\obfuscar\\Obfuscar\.Console\.exe") {
 }
 Write-Host "PASS: build.bat produces clean, unobfuscated Raw Binary for open-source release." -ForegroundColor Green
 
-# 2. 验证 FerrisPulse.exe 具备清晰完整的程序集信息与入口
-$exePath = Join-Path $repoRoot "FerrisPulse.exe"
+# 2. 验证 PulseLite.exe 具备清晰完整的程序集信息与入口
+$exePath = Join-Path $repoRoot "PulseLite.exe"
 if (-not (Test-Path $exePath)) {
-    Write-Error "FAIL: FerrisPulse.exe does not exist!"
+    Write-Error "FAIL: PulseLite.exe does not exist!"
     exit 1
 }
 
@@ -39,5 +39,5 @@ if ($null -eq $mainFormType) {
     exit 1
 }
 
-Write-Host "PASS: FerrisPulse.exe contains clean, uncorrupted .NET assembly metadata." -ForegroundColor Green
+Write-Host "PASS: PulseLite.exe contains clean, uncorrupted .NET assembly metadata." -ForegroundColor Green
 Write-Host "ALL TESTS PASSED for test_obfuscation_integrity.ps1" -ForegroundColor Cyan

@@ -5,8 +5,8 @@ $ErrorActionPreference = "Stop"
 $repoRoot = (Resolve-Path "$PSScriptRoot\..").Path
 Set-Location $repoRoot
 
-$asmPath = Join-Path $repoRoot "FerrisPulse.exe"
-if (-not (Test-Path $asmPath)) { $asmPath = "FerrisPulse.exe" }
+$asmPath = Join-Path $repoRoot "PulseLite.exe"
+if (-not (Test-Path $asmPath)) { $asmPath = "PulseLite.exe" }
 $fullPath = (Resolve-Path $asmPath).Path
 $bytes = [System.IO.File]::ReadAllBytes($fullPath)
 $asm = [System.Reflection.Assembly]::Load($bytes)
@@ -41,8 +41,8 @@ if ($mAumid -eq $null) {
 Write-Host "PASS: Public APIs contracts exist." -ForegroundColor Green
 
 $desktop = [Environment]::GetFolderPath([Environment+SpecialFolder]::Desktop)
-$desktopLnk = Join-Path $desktop "FerrisPulse · 灵脉.lnk"
-$backupLnk = Join-Path ([System.IO.Path]::GetTempPath()) ("FerrisPulse_Desktop_Backup_" + [System.Guid]::NewGuid().ToString("N") + ".lnk")
+$desktopLnk = Join-Path $desktop "PulseLite.lnk"
+$backupLnk = Join-Path ([System.IO.Path]::GetTempPath()) ("PulseLite_Desktop_Backup_" + [System.Guid]::NewGuid().ToString("N") + ".lnk")
 $hadExistingShortcut = Test-Path $desktopLnk
 
 if ($hadExistingShortcut) {
@@ -52,7 +52,7 @@ if ($hadExistingShortcut) {
 
 try {
     # Reset registry flag to 0 to simulate clean / first run
-    $regKey = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey("Software\FerrisPulse")
+    $regKey = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey("Software\PulseLite")
     $regKey.SetValue("DesktopShortcutInitialized", 0, [Microsoft.Win32.RegistryValueKind]::DWord)
 
     # Scenario A: First manual run (isAutoStart = false) MUST NOT create desktop shortcut
@@ -78,7 +78,7 @@ try {
         exit 1
     }
     $startMenu = Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::ApplicationData)) "Microsoft\Windows\Start Menu\Programs"
-    $startLnk = Join-Path $startMenu "FerrisPulse · 灵脉.lnk"
+    $startLnk = Join-Path $startMenu "PulseLite.lnk"
     if (-not (Test-Path $startLnk)) {
         Write-Host "FAIL: Start Menu AUMID shortcut was not created!" -ForegroundColor Red
         exit 1
@@ -100,8 +100,8 @@ try {
                 Write-Host "FAIL: Desktop shortcut TargetPath was corrupted to: $($sc.TargetPath)!" -ForegroundColor Red
                 exit 1
             }
-            if (-not ($sc.TargetPath -like "*FerrisPulse.exe*")) {
-                Write-Host "FAIL: Desktop shortcut TargetPath does not point to FerrisPulse.exe: $($sc.TargetPath)!" -ForegroundColor Red
+            if (-not ($sc.TargetPath -like "*PulseLite.exe*")) {
+                Write-Host "FAIL: Desktop shortcut TargetPath does not point to PulseLite.exe: $($sc.TargetPath)!" -ForegroundColor Red
                 exit 1
             }
         }

@@ -1555,17 +1555,17 @@ namespace RazerBatteryTray
             if (lastInfo.Category == DeviceCategory.Keyboard && lastInfo.BatteryPercent <= 0)
             {
                 menuStatus = string.Format("[{0}] {1} (免驱在线)", brandTag, devDisplayName);
-                tipText = string.Format("FerrisPulse · 灵脉\n[{0}] {1}\n状态: 免驱在线\n最后同步: {2}", brandTag, devDisplayName, timeStr);
+                tipText = string.Format("PulseLite\n[{0}] {1}\n状态: 免驱在线\n最后同步: {2}", brandTag, devDisplayName, timeStr);
             }
             else if (lastInfo.Category == DeviceCategory.Keyboard && lastInfo.BatteryPercent >= 100)
             {
                 menuStatus = string.Format("[{0}] {1} (供电中)", brandTag, devDisplayName);
-                tipText = string.Format("FerrisPulse · 灵脉\n[{0}] {1}\n状态: 2.4G 供电中\n最后同步: {2}", brandTag, devDisplayName, timeStr);
+                tipText = string.Format("PulseLite\n[{0}] {1}\n状态: 2.4G 供电中\n最后同步: {2}", brandTag, devDisplayName, timeStr);
             }
             else
             {
                 menuStatus = string.Format("[{0}] {1} ({2}% · {3})", brandTag, devDisplayName, lastInfo.BatteryPercent, chgPart);
-                tipText = string.Format("FerrisPulse · 灵脉\n[{0}] {1} · {2}%\n状态: {3}{4}{5}\n最后同步: {6}",
+                tipText = string.Format("PulseLite\n[{0}] {1} · {2}%\n状态: {3}{4}{5}\n最后同步: {6}",
                     brandTag, devDisplayName, lastInfo.BatteryPercent, chgStr, dpiPart, ratePart, timeStr);
             }
             statusMenuItem.Text = menuStatus;

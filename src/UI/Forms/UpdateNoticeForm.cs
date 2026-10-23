@@ -481,7 +481,7 @@ namespace RazerBatteryTray
             lblProgressText.Text = "正在同步更新组件...";
 
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string tempExe = Path.Combine(baseDir, "FerrisPulse.exe.update");
+            string tempExe = Path.Combine(baseDir, "PulseLite.exe.update");
 
             UpdateManager.DownloadFileAsync(
                 updateInfo.DownloadUrl,

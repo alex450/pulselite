@@ -66,8 +66,8 @@ Write-Host "`n==========================================================" -Foreg
 Write-Host " [测试 3/5] HyperX 硬件标识与型号白名单校验" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-# 加载 FerrisPulse.exe 进行反射与契约测试
-$binPath = "$ProjectDir\FerrisPulse.exe"
+# 加载 PulseLite.exe 进行反射与契约测试
+$binPath = "$ProjectDir\PulseLite.exe"
 if (-not (Test-Path $binPath)) {
     Write-Host "编译二进制以供测试反射..." -ForegroundColor Yellow
     cmd /c "$ProjectDir\build.bat" | Out-Null

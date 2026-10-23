@@ -1,11 +1,11 @@
 ﻿{
-  "$schema": "https://raw.githubusercontent.com/Ferris-echo/FerrisPulse/main/schemas/fdas-v1.0.json",
+  "$schema": "https://raw.githubusercontent.com/Ferris-echo/PulseLite/main/schemas/fdas-v1.0.json",
   "fdasVersion": "1.0",
   "metadata": {
     "brand": "Sony",
     "model": "INZONE Buds (WF-G700N)",
     "category": "Earbuds",
-    "author": "FerrisPulse 官方驱动组",
+    "author": "PulseLite 官方驱动组",
     "description": "索尼 INZONE Buds 2.4GHz 无线游戏入耳式降噪耳机私有 HID 协议，支持左右耳塞与充电盒三节点独立电量与充电状态监控。"
   },
   "hardware": {

@@ -95,25 +95,25 @@ namespace RazerBatteryTray
                 // 1. Gitee 权威国内直连源 (国内 100% 极速直连，双账号容灾备选)
                 "https://gitee.com/feitian-zhang-fei/ferris-pulse/raw/main/version.json?_t=" + ticks,
                 "https://gitee.com/Ferris-echo/ferris-pulse/raw/main/version.json?_t=" + ticks,
-                "https://gitee.com/feitian-zhang-fei/FerrisPulse/raw/main/version.json?_t=" + ticks,
-                "https://gitee.com/Ferris-echo/FerrisPulse/raw/main/version.json?_t=" + ticks,
+                "https://gitee.com/feitian-zhang-fei/PulseLite/raw/main/version.json?_t=" + ticks,
+                "https://gitee.com/Ferris-echo/PulseLite/raw/main/version.json?_t=" + ticks,
                 "https://gitee.com/feitian-zhang-fei/RazerBatteryTray/raw/main/version.json?_t=" + ticks,
                 "https://gitee.com/Ferris-echo/RazerBatteryTray/raw/main/version.json?_t=" + ticks,
 
                 // 2. GCore 全球优质 CDN (实测国内 1.6 秒极速直连)
-                "https://gcore.jsdelivr.net/gh/Ferris-echo/FerrisPulse@main/version.json?_t=" + ticks,
+                "https://gcore.jsdelivr.net/gh/Ferris-echo/PulseLite@main/version.json?_t=" + ticks,
                 "https://gcore.jsdelivr.net/gh/Ferris-echo/RazerBatteryTray@main/version.json?_t=" + ticks,
 
                 // 3. 国内专用 GitHub 高速镜像代理
-                "https://ghproxy.net/https://raw.githubusercontent.com/Ferris-echo/FerrisPulse/main/version.json?_t=" + ticks,
-                "https://gh-proxy.com/https://raw.githubusercontent.com/Ferris-echo/FerrisPulse/main/version.json?_t=" + ticks,
+                "https://ghproxy.net/https://raw.githubusercontent.com/Ferris-echo/PulseLite/main/version.json?_t=" + ticks,
+                "https://gh-proxy.com/https://raw.githubusercontent.com/Ferris-echo/PulseLite/main/version.json?_t=" + ticks,
                 "https://ghproxy.net/https://raw.githubusercontent.com/Ferris-echo/RazerBatteryTray/main/version.json?_t=" + ticks,
                 "https://gh-proxy.com/https://raw.githubusercontent.com/Ferris-echo/RazerBatteryTray/main/version.json?_t=" + ticks,
 
                 // 4. Fastly CDN 与 原版 GitHub (海外直连保底)
-                "https://fastly.jsdelivr.net/gh/Ferris-echo/FerrisPulse@main/version.json?_t=" + ticks,
-                "https://cdn.jsdelivr.net/gh/Ferris-echo/FerrisPulse@main/version.json?_t=" + ticks,
-                "https://raw.githubusercontent.com/Ferris-echo/FerrisPulse/main/version.json?_t=" + ticks,
+                "https://fastly.jsdelivr.net/gh/Ferris-echo/PulseLite@main/version.json?_t=" + ticks,
+                "https://cdn.jsdelivr.net/gh/Ferris-echo/PulseLite@main/version.json?_t=" + ticks,
+                "https://raw.githubusercontent.com/Ferris-echo/PulseLite/main/version.json?_t=" + ticks,
                 "https://raw.githubusercontent.com/Ferris-echo/RazerBatteryTray/main/version.json?_t=" + ticks
             };
         }
@@ -225,7 +225,7 @@ namespace RazerBatteryTray
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                         request.Timeout = 6000;
                         request.ReadWriteTimeout = 6000;
-                        request.UserAgent = "FerrisPulse-Client";
+                        request.UserAgent = "PulseLite-Client";
 
                         using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                         {
@@ -309,9 +309,9 @@ namespace RazerBatteryTray
 
                 // 如果是 github.com 或 gitee.com 的下载链，构造高质量双平台互备与国内极速直连源
                 List<string> candidateUrls = new List<string>();
-                if (url.Contains("github.com/Ferris-echo/FerrisPulse/releases/download/"))
+                if (url.Contains("github.com/Ferris-echo/PulseLite/releases/download/"))
                 {
-                    candidateUrls.Add(url.Replace("github.com/Ferris-echo/FerrisPulse", "gitee.com/Ferris-echo/ferris-pulse"));
+                    candidateUrls.Add(url.Replace("github.com/Ferris-echo/PulseLite", "gitee.com/Ferris-echo/ferris-pulse"));
                 }
                 if (url.Contains("github.com/"))
                 {
@@ -322,7 +322,7 @@ namespace RazerBatteryTray
                 if (url.Contains("gitee.com/Ferris-echo/ferris-pulse/releases/download/"))
                 {
                     candidateUrls.Add(url);
-                    string ghUrl = url.Replace("gitee.com/Ferris-echo/ferris-pulse", "github.com/Ferris-echo/FerrisPulse");
+                    string ghUrl = url.Replace("gitee.com/Ferris-echo/ferris-pulse", "github.com/Ferris-echo/PulseLite");
                     candidateUrls.Add("https://ghproxy.net/" + ghUrl);
                     candidateUrls.Add("https://gh-proxy.com/" + ghUrl);
                     candidateUrls.Add(ghUrl);
@@ -343,7 +343,7 @@ namespace RazerBatteryTray
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(candidateUrl);
                         request.Timeout = 15000;
                         request.ReadWriteTimeout = 30000;
-                        request.UserAgent = "FerrisPulse-Downloader";
+                        request.UserAgent = "PulseLite-Downloader";
 
                         using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                         {

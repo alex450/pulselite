@@ -1,6 +1,6 @@
-﻿# FerrisPulse · 灵脉 系统架构与 AI 维护全域指南 (ARCHITECTURE.md)
+﻿# PulseLite 系统架构与 AI 维护全域指南 (ARCHITECTURE.md)
 
-本文档为 **FerrisPulse · 灵脉 (多品牌外设感知与电量管理系统)** 的全景架构地图与开发规范。
+本文档为 **PulseLite (多品牌外设感知与电量管理系统)** 的全景架构地图与开发规范。
 所有参与维护、功能扩展或 Bug 修复的工程师与 AI Agent，**必须严格遵循本文档定义的目录拓扑与行为准则**。
 
 ---
@@ -8,8 +8,8 @@
 ## 1. 系统目录拓扑与功能认知地图 (Cognitive Map)
 
 ```
-D:\FerrisPulse · 灵脉\
-├── FerrisPulse.exe             [单一原生二进制可执行文件]
+D:\PulseLite\
+├── PulseLite.exe             [单一原生二进制可执行文件]
 ├── app.ico                     [程序主图标]
 ├── build.bat                   [单命令模块化极速构建脚本]
 ├── AGENT_RULES.md              [AI 行为准则与高分屏规范]
@@ -140,4 +140,4 @@ D:\FerrisPulse · 灵脉\
 4. **高分屏绝对自适应 (High-DPI Adaptive)**：
    严禁在控件、窗口、边距、圆角处使用硬编码像素数值。必须统一通过 `S(...)` 或 `DpiScale` 计算缩放后的物理尺寸。
 5. **单实例安全互斥**：
-   严禁通过遍历进程名暴力调用 `Process.Kill()`。必须使用系统命名全局互斥体 `Mutex("Global\\FerrisPulse_SingleInstance_Mutex")` 进行优雅管理。
+   严禁通过遍历进程名暴力调用 `Process.Kill()`。必须使用系统命名全局互斥体 `Mutex("Global\\PulseLite_SingleInstance_Mutex")` 进行优雅管理。
